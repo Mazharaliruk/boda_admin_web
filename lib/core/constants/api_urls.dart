@@ -1,4 +1,5 @@
 class ApiUrls{
+  static const String accessToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzMzMjk1MTg0LCJpYXQiOjE3MzMyOTM5ODQsImp0aSI6IjM2ZTUzNmUwM2Q2YzRhZWI4NzM5ZjcyYWFlZDQzNjUwIiwidXNlcl9pZCI6Mn0.8Bk_gHfPHaog-MNgLtHhSfhb7AjtTS3RPKgcT0y65aY";
   static const String baseUrl = "http://127.0.0.1:8000/";
 
 
@@ -8,7 +9,7 @@ class ApiUrls{
 
   // Inventry endpoints
   static const String inventry = "${baseUrl}inventry/v1/";
-  static const String categories = "$baseUrl${inventry}categories/";
+  static const String categories = "${inventry}categories/";
   static const String subCategories = "$baseUrl${inventry}subcategories/";
   static const String promotion = "$baseUrl${inventry}promotions/";
   static const String dicount = "$baseUrl${inventry}discounts/";

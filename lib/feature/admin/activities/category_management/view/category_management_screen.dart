@@ -7,6 +7,7 @@ class CategoryManagementScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    
     return Scaffold(
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: AppConstants.padding),
