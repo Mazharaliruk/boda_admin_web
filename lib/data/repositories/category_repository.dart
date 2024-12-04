@@ -70,7 +70,7 @@ Future<List<CategoriesModel>> fetchCategories() async {
 }
 
 
-// update category
+// Update category
 Future<void> updateCategory(CategoriesModel data) async {
   final url = '${ApiUrls.categories}/${data.id}';
 
@@ -78,19 +78,81 @@ Future<void> updateCategory(CategoriesModel data) async {
     final response = await http.put(
       Uri.parse(url),
       headers: getHeaders(),
-      body: json.encode(data),
+      body: json.encode(data.toMap()), // Ensure data is serialized correctly
     );
 
-    if (response.statusCode == 200) {
-      // Category updated successfully
-      print('Category updated successfully');
-      return;
-    } else {
-      throw Exception('Failed to update category.');
+    // Handle response status codes
+    switch (response.statusCode) {
+      case 200:
+        print('Category updated successfully');
+        return;
+      case 400:
+        throw BadRequestException('Bad Request: Invalid data for update.');
+      case 401:
+        throw UnauthorizedException('Unauthorized: Invalid or missing token.');
+      case 403:
+        throw ForbiddenException('Forbidden: You do not have permission to update this category.');
+      case 404:
+        throw NotFoundException('Not Found: The category does not exist.');
+      case 500:
+      case 502:
+      case 503:
+      case 504:
+        throw InternalServerException('Server Error: Something went wrong on the server side.');
+      default:
+        throw UnknownException(
+            'Unknown Error: Update failed with status code ${response.statusCode}.');
     }
+  } on http.ClientException catch (e) {
+    throw NetworkException('Network Error: $e');
+  } on FormatException catch (e) {
+    throw CommonException('Data Format Error: $e');
   } catch (e) {
-    throw Exception('Failed to update category: $e');
+    throw UnknownException('An unexpected error occurred: $e');
   }
 }
+
+
+// Delete category
+Future<void> deleteCategory(int id) async {
+  final url = '${ApiUrls.categories}/$id';
+
+  try {
+    final response = await http.delete(
+      Uri.parse(url),
+      headers: getHeaders(),
+    );
+
+    // Handle response status codes
+    switch (response.statusCode) {
+      case 200:
+        print('Category deleted successfully');
+        return;
+      case 400:
+        throw BadRequestException('Bad Request: Invalid ID provided for deletion.');
+      case 401:
+        throw UnauthorizedException('Unauthorized: Invalid or missing token.');
+      case 403:
+        throw ForbiddenException('Forbidden: You do not have permission to delete this category.');
+      case 404:
+        throw NotFoundException('Not Found: The category does not exist.');
+      case 500:
+      case 502:
+      case 503:
+      case 504:
+        throw InternalServerException('Server Error: Something went wrong on the server side.');
+      default:
+        throw UnknownException(
+            'Unknown Error: Deletion failed with status code ${response.statusCode}.');
+    }
+  } on http.ClientException catch (e) {
+    throw NetworkException('Network Error: $e');
+  } on FormatException catch (e) {
+    throw CommonException('Data Format Error: $e');
+  } catch (e) {
+    throw UnknownException('An unexpected error occurred: $e');
+  }
+}
+
 
 }
