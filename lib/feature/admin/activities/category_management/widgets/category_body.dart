@@ -6,7 +6,7 @@ import 'package:admin_boda/commons/common_widgets/custom_button.dart';
 import 'package:admin_boda/commons/common_widgets/show_dialog.dart';
 import 'package:admin_boda/feature/admin/activities/category_management/dialog/add_category_dialog.dart';
 
-import '../../../../../models/categories_model.dart';
+import '../../../../../models/inventry/categories_model.dart';
 import '../controller/category_management_controller.dart';
 
 class CategoryBody extends ConsumerStatefulWidget {

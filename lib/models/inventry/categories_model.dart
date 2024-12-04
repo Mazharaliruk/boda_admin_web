@@ -4,16 +4,16 @@ import 'dart:convert';
 class CategoriesModel {
   int id;
   String name;
-  DateTime createdAt;
-  DateTime updatedAt;
+  DateTime created_at;
+  DateTime updated_at;
   String? image_url;
   bool? is_active;
   String? slug;
   CategoriesModel({
     required this.id,
     required this.name,
-    required this.createdAt,
-    required this.updatedAt,
+    required this.created_at,
+    required this.updated_at,
     this.image_url,
     this.is_active,
     this.slug,
@@ -22,8 +22,8 @@ class CategoriesModel {
   CategoriesModel copyWith({
     int? id,
     String? name,
-    DateTime? createdAt,
-    DateTime? updatedAt,
+    DateTime? created_at,
+    DateTime? updated_at,
     String? image_url,
     bool? is_active,
     String? slug,
@@ -31,8 +31,8 @@ class CategoriesModel {
     return CategoriesModel(
       id: id ?? this.id,
       name: name ?? this.name,
-      createdAt: createdAt ?? this.createdAt,
-      updatedAt: updatedAt ?? this.updatedAt,
+      created_at: created_at ?? this.created_at,
+      updated_at: updated_at ?? this.updated_at,
       image_url: image_url ?? this.image_url,
       is_active: is_active ?? this.is_active,
       slug: slug ?? this.slug,
@@ -43,8 +43,8 @@ class CategoriesModel {
     return <String, dynamic>{
       'id': id,
       'name': name,
-      'createdAt': createdAt.millisecondsSinceEpoch,
-      'updatedAt': updatedAt.millisecondsSinceEpoch,
+      'created_at': created_at.millisecondsSinceEpoch,
+      'updated_at': updated_at.millisecondsSinceEpoch,
       'image_url': image_url,
       'is_active': is_active,
       'slug': slug,
@@ -55,8 +55,8 @@ class CategoriesModel {
     return CategoriesModel(
       id: map['id'] as int,
       name: map['name'] as String,
-      createdAt: DateTime.parse(map['created_at'] as String), // Parse ISO 8601 string
-      updatedAt: DateTime.parse(map['updated_at'] as String), // Parse ISO 8601 string
+      created_at: DateTime.parse(map['created_at'] as String), // Parse ISO 8601 string
+      updated_at: DateTime.parse(map['updated_at'] as String), // Parse ISO 8601 string
       image_url: map['image_url'] != null ? map['image_url'] as String : null,
       is_active: map['is_active'] != null ? map['is_active'] as bool : null,
       slug: map['slug'] != null ? map['slug'] as String : null,
@@ -69,7 +69,7 @@ class CategoriesModel {
 
   @override
   String toString() {
-    return 'CategoriesModel(id: $id, name: $name, createdAt: $createdAt, updatedAt: $updatedAt, image_url: $image_url, is_active: $is_active, slug: $slug)';
+    return 'CategoriesModel(id: $id, name: $name, created_at: $created_at, updated_at: $updated_at, image_url: $image_url, is_active: $is_active, slug: $slug)';
   }
 
   @override
@@ -79,8 +79,8 @@ class CategoriesModel {
     return 
       other.id == id &&
       other.name == name &&
-      other.createdAt == createdAt &&
-      other.updatedAt == updatedAt &&
+      other.created_at == created_at &&
+      other.updated_at == updated_at &&
       other.image_url == image_url &&
       other.is_active == is_active &&
       other.slug == slug;
@@ -90,8 +90,8 @@ class CategoriesModel {
   int get hashCode {
     return id.hashCode ^
       name.hashCode ^
-      createdAt.hashCode ^
-      updatedAt.hashCode ^
+      created_at.hashCode ^
+      updated_at.hashCode ^
       image_url.hashCode ^
       is_active.hashCode ^
       slug.hashCode;

@@ -2,11 +2,8 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import '../../core/constants/api_urls.dart';
-import '../../models/categories_model.dart';
+import '../../models/inventry/categories_model.dart';
 import '../../utils/exceptions/common_exception.dart';
-
-class CategoryRepository {
-
   Map<String, String> getHeaders() {
     return {
       'Content-Type': 'application/json',
@@ -15,6 +12,7 @@ class CategoryRepository {
     };
   }
 
+class CategoryRepository {
 
 
 // Method to fetch categories
