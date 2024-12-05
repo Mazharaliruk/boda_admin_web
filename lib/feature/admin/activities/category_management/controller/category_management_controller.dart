@@ -1,7 +1,7 @@
 import 'package:admin_boda/commons/common_imports/apis_commons.dart';
 import 'package:admin_boda/commons/common_imports/common_libs.dart';
 
-import '../../../../../data/repositories/category_repository.dart';
+import '../../../../../data/repositories/inventry/category_repository.dart';
 import '../../../../../models/inventry/categories_model.dart';
 
 

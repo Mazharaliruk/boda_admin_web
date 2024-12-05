@@ -1,11 +1,11 @@
 
 import 'dart:convert';
 
-import '../../core/constants/api_urls.dart';
+import '../../../core/constants/api_urls.dart';
 import 'package:http/http.dart' as http;
 
-import '../../models/inventry/promotion_model.dart';
-import '../../utils/exceptions/common_exception.dart';
+import '../../../models/inventry/promotion_model.dart';
+import '../../../utils/exceptions/common_exception.dart';
 import 'category_repository.dart';
 
 class PromotionRepository {

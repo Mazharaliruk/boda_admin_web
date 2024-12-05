@@ -1,23 +1,16 @@
-
 import 'dart:convert';
+
+import 'package:admin_boda/models/inventry/discount_model.dart';
+
+import '../../../core/constants/api_urls.dart';
+import '../../../utils/exceptions/common_exception.dart';
+import 'category_repository.dart';
 import 'package:http/http.dart' as http;
-import '../../core/constants/api_urls.dart';
-import '../../models/inventry/categories_model.dart';
-import '../../utils/exceptions/common_exception.dart';
-  Map<String, String> getHeaders() {
-    return {
-      'Content-Type': 'application/json',
-      'authorization': 'Bearer ${ApiUrls.accessToken}',
-     
-    };
-  }
 
-class CategoryRepository {
-
-
-// Method to fetch categories
-Future<List<CategoriesModel>> fetchCategories() async {
-  const String url = ApiUrls.categories;
+class DiscountRepository {
+   
+Future<List<DiscountModel>> fetchDiscount() async {
+  const String url = ApiUrls.dicount;
 
   try {
     final response = await http.get(Uri.parse(url), headers: getHeaders());
@@ -29,10 +22,10 @@ Future<List<CategoriesModel>> fetchCategories() async {
         final data = json.decode(response.body);
         if (data is List) {
           // Ensure all elements in the list are properly typed
-          return data.map<CategoriesModel>((item) {
+          return data.map<DiscountModel>((item) {
             if (item is Map<String, dynamic>) {
               print(item);
-              return CategoriesModel.fromMap(item);
+              return DiscountModel.fromMap(item);
             } else {
               throw FormatException("Unexpected data format: $item");
             }
@@ -68,9 +61,12 @@ Future<List<CategoriesModel>> fetchCategories() async {
 }
 
 
+
+
+
 // Update category
-Future<void> updateCategory(CategoriesModel data) async {
-  final url = '${ApiUrls.categories}/${data.id}';
+Future<void> updateDiscount(DiscountModel data) async {
+  final url = '${ApiUrls.dicount}/${data.id}';
 
   try {
     final response = await http.put(
@@ -82,7 +78,7 @@ Future<void> updateCategory(CategoriesModel data) async {
     // Handle response status codes
     switch (response.statusCode) {
       case 200:
-        print('Category updated successfully');
+        print('Discount updated successfully');
         return;
       case 400:
         throw BadRequestException('Bad Request: Invalid data for update.');
@@ -112,8 +108,8 @@ Future<void> updateCategory(CategoriesModel data) async {
 
 
 // Delete category
-Future<void> deleteCategory(int id) async {
-  final url = '${ApiUrls.categories}/$id';
+Future<void> deleteDiscount(int id) async {
+  final url = '${ApiUrls.dicount}/$id';
 
   try {
     final response = await http.delete(
@@ -124,7 +120,7 @@ Future<void> deleteCategory(int id) async {
     // Handle response status codes
     switch (response.statusCode) {
       case 200:
-        print('Category deleted successfully');
+        print('Discount deleted successfully');
         return;
       case 400:
         throw BadRequestException('Bad Request: Invalid ID provided for deletion.');
@@ -151,6 +147,4 @@ Future<void> deleteCategory(int id) async {
     throw UnknownException('An unexpected error occurred: $e');
   }
 }
-
-
 }
