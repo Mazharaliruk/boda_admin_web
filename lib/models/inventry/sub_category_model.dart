@@ -11,7 +11,7 @@ class SubCategoryModel {
   String? image_url;
   bool is_active;
   String? slug;
-  int category_id;
+  int category;
   SubCategoryModel({
     required this.id,
     required this.name,
@@ -20,7 +20,7 @@ class SubCategoryModel {
     this.image_url,
     required this.is_active,
     this.slug,
-    required this.category_id,
+    required this.category,
   });
 
   SubCategoryModel copyWith({
@@ -31,7 +31,7 @@ class SubCategoryModel {
     String? image_url,
     bool? is_active,
     String? slug,
-    int? category_id,
+    int? category,
   }) {
     return SubCategoryModel(
       id: id ?? this.id,
@@ -41,7 +41,7 @@ class SubCategoryModel {
       image_url: image_url ?? this.image_url,
       is_active: is_active ?? this.is_active,
       slug: slug ?? this.slug,
-      category_id: category_id ?? this.category_id,
+      category: category ?? this.category,
     );
   }
 
@@ -54,7 +54,7 @@ class SubCategoryModel {
       'image_url': image_url,
       'is_active': is_active,
       'slug': slug,
-      'category_id': category_id,
+      'category': category,
     };
   }
 
@@ -62,12 +62,12 @@ class SubCategoryModel {
     return SubCategoryModel(
       id: map['id'] as int,
       name: map['name'] as String,
-      created_at: DateTime.parse(map['created_at'] as String),
-      updated_at: DateTime.parse(map['updated_at'] as String),
+      created_at: DateTime.fromMillisecondsSinceEpoch(map['created_at'] as int),
+      updated_at: DateTime.fromMillisecondsSinceEpoch(map['updated_at'] as int),
       image_url: map['image_url'] != null ? map['image_url'] as String : null,
       is_active: map['is_active'] as bool,
       slug: map['slug'] != null ? map['slug'] as String : null,
-      category_id: map['category_id'] as int,
+      category: map['category'] as int,
     );
   }
 
@@ -77,7 +77,7 @@ class SubCategoryModel {
 
   @override
   String toString() {
-    return 'SubCategoryModel(id: $id, name: $name, created_at: $created_at, updated_at: $updated_at, image_url: $image_url, is_active: $is_active, slug: $slug, category_id: $category_id)';
+    return 'SubCategoryModel(id: $id, name: $name, created_at: $created_at, updated_at: $updated_at, image_url: $image_url, is_active: $is_active, slug: $slug, category: $category)';
   }
 
   @override
@@ -92,7 +92,7 @@ class SubCategoryModel {
       other.image_url == image_url &&
       other.is_active == is_active &&
       other.slug == slug &&
-      other.category_id == category_id;
+      other.category == category;
   }
 
   @override
@@ -104,6 +104,6 @@ class SubCategoryModel {
       image_url.hashCode ^
       is_active.hashCode ^
       slug.hashCode ^
-      category_id.hashCode;
+      category.hashCode;
   }
 }

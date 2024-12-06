@@ -1,30 +1,47 @@
-import 'dart:typed_data';
+import 'dart:io';
+
 import 'package:admin_boda/commons/common_functions/padding.dart';
+import 'package:admin_boda/commons/common_imports/apis_commons.dart';
 import 'package:admin_boda/commons/common_imports/common_libs.dart';
 import 'package:admin_boda/commons/common_widgets/custom_button.dart';
 import 'package:admin_boda/commons/common_widgets/custom_text_fields.dart';
 import 'package:admin_boda/feature/admin/activities/category_management/widgets/upload_image_widget.dart';
 import 'package:admin_boda/utils/constants/assets_manager.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:image_picker/image_picker.dart';
 
-class AddSubCategoryDialog extends StatefulWidget {
+import '../../category_management/controller/category_management_controller.dart';
+import '../controller/sub_category_controller.dart';
+
+class AddSubCategoryDialog extends ConsumerStatefulWidget {
   const AddSubCategoryDialog({super.key});
 
   @override
-  State<AddSubCategoryDialog> createState() => _AddSubCategoryDialogState();
+  ConsumerState<AddSubCategoryDialog> createState() =>
+      _AddSubCategoryDialogState();
 }
 
-class _AddSubCategoryDialogState extends State<AddSubCategoryDialog> {
-  final countryNameCtr = TextEditingController();
-  final countryTitleCtr = TextEditingController();
+class _AddSubCategoryDialogState extends ConsumerState<AddSubCategoryDialog> {
+  final subCateTitle = TextEditingController();
   final description = TextEditingController();
-  List<Uint8List> bytes = [];
-  List<String> imagePaths = [];
-  String thumbnailPath = '';
+  final categoryCtr = TextEditingController();
+  XFile? pickedFile;
   bool isAvailable = false;
 
   @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    subCateTitle.dispose();
+    description.dispose();
+    categoryCtr.dispose();
+
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final subCategoryController = ref.watch(subCategoryManagementProvider);
+    final categroyController = ref.watch(categoryManagementProvider);
     return Container(
       height: 700,
       width: 584,
@@ -68,21 +85,26 @@ class _AddSubCategoryDialogState extends State<AddSubCategoryDialog> {
               padding48,
               UploadImageWidget(
                 isThumbnail: true,
-                onImageSelected: (image) {},
+                onImageSelected: (image) {
+                  setState(() {
+                    pickedFile = image;
+                  });
+                },
                 title: 'Upload Thumbnail image',
               ),
               padding12,
               CustomTextField(
                 fillColor: context.whiteColor,
                 verticalPadding: 10,
-                controller: countryTitleCtr,
+                controller: subCateTitle,
                 hintText: 'Enter Title',
                 label: 'Title',
               ),
               CustomTextField(
+                
                 fillColor: context.whiteColor,
                 verticalPadding: 10,
-                controller: countryNameCtr,
+                controller: description,
                 tailingIconPath: AppAssets.dropDownSvgIcon,
                 hintText: 'Select Category',
                 label: 'Category',
@@ -91,7 +113,7 @@ class _AddSubCategoryDialogState extends State<AddSubCategoryDialog> {
               CustomTextField(
                 fillColor: context.whiteColor,
                 verticalPadding: 10,
-                controller: countryTitleCtr,
+                controller: description,
                 maxLines: 4,
                 hintText: 'Add some description',
                 label: 'Description',
@@ -112,7 +134,15 @@ class _AddSubCategoryDialogState extends State<AddSubCategoryDialog> {
                   ),
                   padding12,
                   CustomButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      subCategoryController.saveSubCategory(
+                      {
+                        "name": subCateTitle.text,
+                        "description": description.text,
+                        "category_id":""
+                      },
+                     File(pickedFile!.path));
+                    },
                     buttonText: 'Save',
                     buttonHeight: 48,
                     buttonWidth: 250,

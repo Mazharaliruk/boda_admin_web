@@ -4,14 +4,16 @@ import 'package:admin_boda/utils/constants/assets_manager.dart';
 import 'package:dotted_line/dotted_line.dart';
 
 import '../../models/inventry/categories_model.dart';
+import '../../models/inventry/sub_category_model.dart';
 
 // ignore: must_be_immutable
 class CategoryCard extends StatelessWidget {
    CategoryCard(
-      {super.key, required this.index, required this.isCategory,  this.categoriesModel});
+      {super.key, required this.index, required this.isCategory,  this.categoriesModel, this.subCategoriesModel});
   final int index;
   final bool isCategory;
   CategoriesModel? categoriesModel;
+  SubCategoryModel? subCategoriesModel;
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +48,7 @@ class CategoryCard extends StatelessWidget {
                 height: 75,
                 width: 75,
                 // fit: index == 0 ? null : BoxFit.cover,
-              ): Image.asset(
+              ):subCategoriesModel?.image_url != null ? Image.network(subCategoriesModel!.image_url!, fit: BoxFit.cover,) : Image.asset(
                 AppAssets.catIcon,
                 height: 75,
                 width: 75,
@@ -64,7 +66,7 @@ class CategoryCard extends StatelessWidget {
           padding12,
           Center(
             child: Text(
-             categoriesModel !=null ? "${categoriesModel?.name}" : 'SubCategory',
+             categoriesModel !=null ? "${categoriesModel?.name}" : '${subCategoriesModel?.name}',
               textAlign: TextAlign.center,
               style: getSemiBoldStyle(
                   color: context.blackColor, fontSize: MyFonts.size12),

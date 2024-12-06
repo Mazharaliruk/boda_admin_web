@@ -6,6 +6,9 @@ import 'package:admin_boda/commons/common_widgets/custom_button.dart';
 import 'package:admin_boda/commons/common_widgets/show_dialog.dart';
 import 'package:admin_boda/feature/admin/activities/sub_category_management/dialog/add_sub_cat_dialog.dart';
 
+import '../../../../../models/inventry/sub_category_model.dart';
+import '../controller/sub_category_controller.dart';
+
 class SubCategoryBody extends ConsumerStatefulWidget {
   const SubCategoryBody({super.key});
 
@@ -16,6 +19,8 @@ class SubCategoryBody extends ConsumerStatefulWidget {
 class _SubCategoryBody extends ConsumerState<SubCategoryBody> {
   @override
   Widget build(BuildContext context) {
+    final subCategoryController = ref.watch(subCategoryManagementProvider);
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -42,16 +47,33 @@ class _SubCategoryBody extends ConsumerState<SubCategoryBody> {
             decoration: BoxDecoration(
                 color: context.whiteColor,
                 borderRadius: BorderRadius.circular(14.r)),
-            child: GridView.builder(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 30, vertical: 20),
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 3,
-                    mainAxisExtent: 150,
-                    mainAxisSpacing: 20,
-                    crossAxisSpacing: 20),
-                itemBuilder: (context, index) {
-                  return CategoryCard(index: index, isCategory: false);
+            child: FutureBuilder<List<SubCategoryModel>>(
+                future: subCategoryController.fetchSubCategories(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator());
+                  } else if (snapshot.hasError) {
+                    return Center(child: Text(snapshot.error.toString()));
+                  } else if (!snapshot.hasData) {
+                    return const Center(
+                        child: Text("Sub Categories not found"));
+                  }
+                  return GridView.builder(
+                      itemCount: snapshot.data!.length,
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 30, vertical: 20),
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 3,
+                              mainAxisExtent: 150,
+                              mainAxisSpacing: 20,
+                              crossAxisSpacing: 20),
+                      itemBuilder: (context, index) {
+                        return CategoryCard(
+                            index: index,
+                            isCategory: false,
+                            subCategoriesModel: snapshot.data![index]);
+                      });
                 }),
           ),
         ),
