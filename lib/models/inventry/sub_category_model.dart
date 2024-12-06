@@ -62,8 +62,8 @@ class SubCategoryModel {
     return SubCategoryModel(
       id: map['id'] as int,
       name: map['name'] as String,
-      created_at: DateTime.fromMillisecondsSinceEpoch(map['created_at'] as int),
-      updated_at: DateTime.fromMillisecondsSinceEpoch(map['updated_at'] as int),
+      created_at: DateTime.parse(map['created_at'] as String),
+      updated_at: DateTime.parse(map['updated_at'] as String),
       image_url: map['image_url'] != null ? map['image_url'] as String : null,
       is_active: map['is_active'] as bool,
       slug: map['slug'] != null ? map['slug'] as String : null,
