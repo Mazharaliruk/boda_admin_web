@@ -1,5 +1,5 @@
 class ApiUrls{
-  static const String accessToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzMzMjk1MTg0LCJpYXQiOjE3MzMyOTM5ODQsImp0aSI6IjM2ZTUzNmUwM2Q2YzRhZWI4NzM5ZjcyYWFlZDQzNjUwIiwidXNlcl9pZCI6Mn0.8Bk_gHfPHaog-MNgLtHhSfhb7AjtTS3RPKgcT0y65aY";
+  static const String accessToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzMzNDYzMjI5LCJpYXQiOjE3MzM0NTk2MjksImp0aSI6ImY3MTg5N2RjYzczNDQ5ZDI5NWUxMDgzOWM5ZGViMzdiIiwidXNlcl9pZCI6Mn0.vAEZal-M-KkDCVxjG81Uyy7nj8ZS-nqyufgQdjJEnjg";
   static const String baseUrl = "http://127.0.0.1:8000/";
 
 

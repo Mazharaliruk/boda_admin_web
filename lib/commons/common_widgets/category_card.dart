@@ -3,11 +3,15 @@ import 'package:admin_boda/commons/common_imports/common_libs.dart';
 import 'package:admin_boda/utils/constants/assets_manager.dart';
 import 'package:dotted_line/dotted_line.dart';
 
+import '../../models/inventry/categories_model.dart';
+
+// ignore: must_be_immutable
 class CategoryCard extends StatelessWidget {
-  const CategoryCard(
-      {super.key, required this.index, required this.isCategory});
+   CategoryCard(
+      {super.key, required this.index, required this.isCategory,  this.categoriesModel});
   final int index;
   final bool isCategory;
+  CategoriesModel? categoriesModel;
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +41,12 @@ class CategoryCard extends StatelessWidget {
             child: ClipRRect(
               borderRadius: const BorderRadius.only(
                   topLeft: Radius.circular(16), topRight: Radius.circular(16)),
-              child: Image.asset(
+              child:  categoriesModel !=null? categoriesModel?.image_url != null ? Image.network(categoriesModel!.image_url!, fit: BoxFit.cover,) : Image.asset(
+                AppAssets.catIcon,
+                height: 75,
+                width: 75,
+                // fit: index == 0 ? null : BoxFit.cover,
+              ): Image.asset(
                 AppAssets.catIcon,
                 height: 75,
                 width: 75,
@@ -55,7 +64,7 @@ class CategoryCard extends StatelessWidget {
           padding12,
           Center(
             child: Text(
-              isCategory ? 'Category' : 'Sub Category',
+             categoriesModel !=null ? "${categoriesModel?.name}" : 'SubCategory',
               textAlign: TextAlign.center,
               style: getSemiBoldStyle(
                   color: context.blackColor, fontSize: MyFonts.size12),

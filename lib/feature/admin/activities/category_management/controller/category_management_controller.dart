@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:admin_boda/commons/common_imports/apis_commons.dart';
 import 'package:admin_boda/commons/common_imports/common_libs.dart';
 
@@ -21,12 +23,17 @@ final _categoryRepo = CategoryRepository();
 
 
   // fetch categories
-  Future<List<dynamic>> fetchCategories() async {
+  Future<List<CategoriesModel>> fetchCategories() async {
     return await _categoryRepo.fetchCategories();
   }
 
 // update category
   Future<void> updateCategory(CategoriesModel data) async {
-    return await _categoryRepo.updateCategory(data);
+     await _categoryRepo.updateCategory(data);
+  }
+
+
+  Future<void> saveCategory(Map<String, dynamic> data, [File? imageFile])async{
+    _categoryRepo.saveCategory(data, imageFile);
   }
 }

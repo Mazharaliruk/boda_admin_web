@@ -10,15 +10,14 @@ import 'package:image_picker/image_picker.dart';
 class UploadImageWidget extends ConsumerStatefulWidget {
   const UploadImageWidget({
     super.key,
-    required this.imgPath,
+    required this.onImageSelected,
     required this.title,
     required this.isThumbnail,
-    this.fileBytes,
   });
-  final Function(String imgPath) imgPath;
+
+  final Function(XFile? imageFile) onImageSelected; // Callback to return XFile
   final String title;
   final bool isThumbnail;
-  final Function(Uint8List path)? fileBytes;
 
   @override
   ConsumerState<UploadImageWidget> createState() => _UploadImageWidgetState();
@@ -26,18 +25,16 @@ class UploadImageWidget extends ConsumerStatefulWidget {
 
 class _UploadImageWidgetState extends ConsumerState<UploadImageWidget> {
   Uint8List? pickedFileBytes;
-  File? pickedFile;
-  bool isLoading = false;
-  getPhoto() async {
-    XFile? imgFile = await ImagePicker().pickImage(source: ImageSource.gallery);
-    if (imgFile != null) {
-      pickedFileBytes = await imgFile.readAsBytes();
-      pickedFile = File(imgFile.path);
-      setState(() {
-        Image.memory(pickedFileBytes!);
-        widget.imgPath(imgFile.path);
-        widget.isThumbnail ? null : widget.fileBytes!(pickedFileBytes!);
-      });
+  XFile? pickedFile;
+
+  Future<void> getPhoto() async {
+    // Pick an image from the gallery
+    pickedFile = await ImagePicker().pickImage(source: ImageSource.gallery);
+    if (pickedFile != null) {
+      pickedFileBytes = await pickedFile!.readAsBytes();
+      setState(() {});
+      // Return the selected image file
+      widget.onImageSelected(pickedFile);
     }
   }
 
@@ -55,7 +52,7 @@ class _UploadImageWidgetState extends ConsumerState<UploadImageWidget> {
         child: SizedBox(
           height: 130,
           width: 360,
-          child: widget.isThumbnail && pickedFileBytes != null
+          child: pickedFileBytes != null
               ? Image.memory(
                   pickedFileBytes!,
                   fit: BoxFit.cover,
@@ -68,8 +65,10 @@ class _UploadImageWidgetState extends ConsumerState<UploadImageWidget> {
                     Text(
                       widget.title,
                       style: getSemiBoldStyle(
-                          color: context.blackColor, fontSize: MyFonts.size16),
-                    )
+                        color: context.blackColor,
+                        fontSize: MyFonts.size16,
+                      ),
+                    ),
                   ],
                 ),
         ),

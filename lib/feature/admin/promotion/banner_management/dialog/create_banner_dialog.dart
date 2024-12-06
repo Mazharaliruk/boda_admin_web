@@ -73,9 +73,7 @@ class _CreateBannerDialogState extends State<CreateBannerDialog> {
                   ? Container()
                   : UploadImageWidget(
                       isThumbnail: true,
-                      imgPath: (val) {
-                        thumbnailPath = val;
-                      },
+                      onImageSelected: (image) {},
                       title: widget.isImage == true
                           ? 'Upload image'
                           : 'Upload Video',

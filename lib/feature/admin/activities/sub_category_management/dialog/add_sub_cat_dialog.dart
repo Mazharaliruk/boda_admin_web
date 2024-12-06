@@ -68,9 +68,7 @@ class _AddSubCategoryDialogState extends State<AddSubCategoryDialog> {
               padding48,
               UploadImageWidget(
                 isThumbnail: true,
-                imgPath: (val) {
-                  thumbnailPath = val;
-                },
+                onImageSelected: (image) {},
                 title: 'Upload Thumbnail image',
               ),
               padding12,
