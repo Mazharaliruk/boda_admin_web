@@ -8,6 +8,8 @@ import 'package:admin_boda/utils/constants/assets_manager.dart';
 import 'package:flutter_popup/flutter_popup.dart';
 import 'package:flutter_svg/svg.dart';
 
+import '../controller/promotion_controller.dart';
+
 class BannerBody extends ConsumerStatefulWidget {
   const BannerBody({super.key});
 
@@ -18,6 +20,7 @@ class BannerBody extends ConsumerStatefulWidget {
 class _LoyaltyBodyState extends ConsumerState<BannerBody> {
   @override
   Widget build(BuildContext context) {
+        final discountcontroller = ref.watch(promotionProvider);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [

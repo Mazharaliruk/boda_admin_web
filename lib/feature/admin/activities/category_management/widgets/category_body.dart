@@ -6,6 +6,7 @@ import 'package:admin_boda/commons/common_widgets/custom_button.dart';
 import 'package:admin_boda/commons/common_widgets/show_dialog.dart';
 import 'package:admin_boda/feature/admin/activities/category_management/dialog/add_category_dialog.dart';
 import '../../../../../models/inventry/categories_model.dart';
+import '../../../../../utils/loading.dart';
 import '../controller/category_management_controller.dart';
 
 class CategoryBody extends ConsumerStatefulWidget {
@@ -51,9 +52,7 @@ class _CategoryBodyState extends ConsumerState<CategoryBody> {
                 future: categoryController.fetchCategories(),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const Center(
-                      child: CircularProgressIndicator(),
-                    );
+                     return const LoadingWidget();
                   } else if (snapshot.hasError) {
                     return Center(child: Text(snapshot.error.toString()));
                   } else if (!snapshot.hasData) {

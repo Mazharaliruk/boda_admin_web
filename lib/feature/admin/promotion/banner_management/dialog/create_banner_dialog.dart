@@ -1,33 +1,36 @@
-import 'dart:typed_data';
 import 'package:admin_boda/commons/common_functions/padding.dart';
 import 'package:admin_boda/commons/common_imports/common_libs.dart';
 import 'package:admin_boda/commons/common_widgets/custom_button.dart';
 import 'package:admin_boda/commons/common_widgets/custom_text_fields.dart';
-import 'package:admin_boda/feature/admin/activities/category_management/widgets/upload_image_widget.dart';
+import 'package:admin_boda/feature/admin/promotion/banner_management/dialog/uplaod_video.dart';
 import 'package:admin_boda/utils/constants/assets_manager.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:image_picker/image_picker.dart';
 
-class CreateBannerDialog extends StatefulWidget {
+import '../../../../../commons/common_imports/apis_commons.dart';
+import '../controller/promotion_controller.dart';
+
+class CreateBannerDialog extends ConsumerStatefulWidget {
   const CreateBannerDialog(
       {super.key, this.isImage = false, this.istext = false});
   final bool? isImage;
   final bool? istext;
 
   @override
-  State<CreateBannerDialog> createState() => _CreateBannerDialogState();
+  ConsumerState<CreateBannerDialog> createState() => _CreateBannerDialogState();
 }
 
-class _CreateBannerDialogState extends State<CreateBannerDialog> {
+class _CreateBannerDialogState extends ConsumerState<CreateBannerDialog> {
   final ofTextCtr = TextEditingController();
   final titleCtr = TextEditingController();
   final description = TextEditingController();
-  List<Uint8List> bytes = [];
-  List<String> imagePaths = [];
-  String thumbnailPath = '';
+  XFile? pickedFile;
   bool isAvailable = false;
 
   @override
   Widget build(BuildContext context) {
+    final discountcontroller = ref.watch(promotionProvider);
+
     return Container(
       height: widget.istext == true ? 550 : 400,
       width: 584,
@@ -71,12 +74,16 @@ class _CreateBannerDialogState extends State<CreateBannerDialog> {
               padding48,
               widget.istext == true
                   ? Container()
-                  : UploadImageWidget(
-                      isThumbnail: true,
-                      onImageSelected: (image) {},
+                  : UploadVideoWidget(
                       title: widget.isImage == true
                           ? 'Upload image'
                           : 'Upload Video',
+                      isThumbnail: true,
+                      onVideoSelected: (image) {
+                        setState(() {
+                          pickedFile = image;
+                        });
+                      },
                     ),
               padding12,
               widget.istext == true

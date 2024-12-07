@@ -9,9 +9,8 @@ class DiscountModel {
    DateTime created_at;
    DateTime updated_at;
    int vendor_id;
-   int promotion_id;
-   int service_id;
-   
+   int promotion;
+   int service;
    String? image_url;
    String? description;
    bool is_active;
@@ -24,8 +23,8 @@ class DiscountModel {
     required this.created_at,
     required this.updated_at,
     required this.vendor_id,
-    required this.promotion_id,
-    required this.service_id,
+    required this.promotion,
+    required this.service,
     this.image_url,
     this.description,
     required this.is_active,
@@ -41,8 +40,8 @@ class DiscountModel {
     DateTime? created_at,
     DateTime? updated_at,
     int? vendor_id,
-    int? promotion_id,
-    int? service_id,
+    int? promotion,
+    int? service,
     String? image_url,
     String? description,
     bool? is_active,
@@ -56,8 +55,8 @@ class DiscountModel {
       created_at: created_at ?? this.created_at,
       updated_at: updated_at ?? this.updated_at,
       vendor_id: vendor_id ?? this.vendor_id,
-      promotion_id: promotion_id ?? this.promotion_id,
-      service_id: service_id ?? this.service_id,
+      promotion: promotion ?? this.promotion,
+      service: service ?? this.service,
       image_url: image_url ?? this.image_url,
       description: description ?? this.description,
       is_active: is_active ?? this.is_active,
@@ -74,8 +73,8 @@ class DiscountModel {
       'created_at': created_at.millisecondsSinceEpoch,
       'updated_at': updated_at.millisecondsSinceEpoch,
       'vendor_id': vendor_id,
-      'promotion_id': promotion_id,
-      'service_id': service_id,
+      'promotion': promotion,
+      'service': service,
       'image_url': image_url,
       'description': description,
       'is_active': is_active,
@@ -89,17 +88,17 @@ class DiscountModel {
     return DiscountModel(
       id: map['id'] as int,
       name: map['name'] as String,
-      created_at: DateTime.parse(map['created_at'] as String),
-      updated_at: DateTime.parse(map['updated_at'] as String),
+      created_at: DateTime.fromMillisecondsSinceEpoch(map['created_at'] as int),
+      updated_at: DateTime.fromMillisecondsSinceEpoch(map['updated_at'] as int),
       vendor_id: map['vendor_id'] as int,
-      promotion_id: map['promotion_id'] as int,
-      service_id: map['service_id'] as int,
+      promotion: map['promotion'] as int,
+      service: map['service'] as int,
       image_url: map['image_url'] != null ? map['image_url'] as String : null,
       description: map['description'] != null ? map['description'] as String : null,
       is_active: map['is_active'] as bool,
       discount_percent: map['discount_percent'] != null ? map['discount_percent'] as double : null,
-      start_date: map['start_date'] != null ? DateTime.parse(map['start_date'] as String) : null,
-      end_date: map['end_date'] != null ? DateTime.parse(map['end_date'] as String) : null,
+      start_date: map['start_date'] != null ? DateTime.fromMillisecondsSinceEpoch(map['start_date'] as int) : null,
+      end_date: map['end_date'] != null ? DateTime.fromMillisecondsSinceEpoch(map['end_date'] as int) : null,
     );
   }
 
@@ -109,7 +108,7 @@ class DiscountModel {
 
   @override
   String toString() {
-    return 'DiscountModel(id: $id, name: $name, created_at: $created_at, updated_at: $updated_at, vendor_id: $vendor_id, promotion_id: $promotion_id, service_id: $service_id, image_url: $image_url, description: $description, is_active: $is_active, discount_percent: $discount_percent, start_date: $start_date, end_date: $end_date)';
+    return 'DiscountModel(id: $id, name: $name, created_at: $created_at, updated_at: $updated_at, vendor_id: $vendor_id, promotion: $promotion, service: $service, image_url: $image_url, description: $description, is_active: $is_active, discount_percent: $discount_percent, start_date: $start_date, end_date: $end_date)';
   }
 
   @override
@@ -122,8 +121,8 @@ class DiscountModel {
       other.created_at == created_at &&
       other.updated_at == updated_at &&
       other.vendor_id == vendor_id &&
-      other.promotion_id == promotion_id &&
-      other.service_id == service_id &&
+      other.promotion == promotion &&
+      other.service == service &&
       other.image_url == image_url &&
       other.description == description &&
       other.is_active == is_active &&
@@ -139,8 +138,8 @@ class DiscountModel {
       created_at.hashCode ^
       updated_at.hashCode ^
       vendor_id.hashCode ^
-      promotion_id.hashCode ^
-      service_id.hashCode ^
+      promotion.hashCode ^
+      service.hashCode ^
       image_url.hashCode ^
       description.hashCode ^
       is_active.hashCode ^

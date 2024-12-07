@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:admin_boda/models/inventry/discount_model.dart';
 
@@ -60,6 +61,69 @@ Future<List<DiscountModel>> fetchDiscount() async {
   }
 }
 
+
+Future<void> saveDiscount(Map<String, dynamic> data, [File? imageFile]) async {
+  const url = ApiUrls.dicount;
+
+  try {
+    // Prepare request
+    var request = http.MultipartRequest('POST', Uri.parse(url));
+
+    // Add headers
+    request.headers.addAll(getHeaders());
+
+    // Add fields
+    data.forEach((key, value) {
+      if (value != null) request.fields[key] = value.toString();
+    });
+
+    // Add the image file if provided
+    if (imageFile != null) {
+      request.files.add(
+        await http.MultipartFile.fromPath(
+          'image_url', // Match the Django model field name
+          imageFile.path,
+        ),
+      );
+    }
+
+    // Send the request
+    var streamedResponse = await request.send();
+
+    // Read and handle response
+    var response = await http.Response.fromStream(streamedResponse);
+
+    switch (response.statusCode) {
+      case 200:
+      case 201:
+        print('Discount saved successfully');
+        return;
+      case 400:
+        throw BadRequestException('Bad Request: Invalid data for save.');
+      case 401:
+        throw UnauthorizedException('Unauthorized: Invalid or missing token.');
+      case 403:
+        throw ForbiddenException(
+            'Forbidden: You do not have permission to save this category.');
+      case 404:
+        throw NotFoundException('Not Found: The category does not exist.');
+      case 500:
+      case 502:
+      case 503:
+      case 504:
+        throw InternalServerException('Server Error: Something went wrong on the server side.');
+      default:
+        throw UnknownException(
+            'Unknown Error: Save failed with status code ${response.statusCode}.');
+    }
+  } on http.ClientException catch (e) {
+    throw NetworkException('Network Error: $e');
+  } on FormatException catch (e) {
+    throw CommonException('Data Format Error: $e');
+  } catch (e) {
+    throw UnknownException('An unexpected error occurred: $e');
+  }
+}
 
 
 

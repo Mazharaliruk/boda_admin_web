@@ -6,15 +6,18 @@ import 'package:admin_boda/utils/constants/assets_manager.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
 
-class CreateDiscountDialog extends StatefulWidget {
+import '../../../../../commons/common_imports/apis_commons.dart';
+import '../controller/discount_controller.dart';
+
+class CreateDiscountDialog extends ConsumerStatefulWidget {
   const CreateDiscountDialog({super.key, required this.isEdit});
   final bool isEdit;
 
   @override
-  State<CreateDiscountDialog> createState() => _CreateDiscountDialogState();
+  ConsumerState<CreateDiscountDialog> createState() => _CreateDiscountDialogState();
 }
 
-class _CreateDiscountDialogState extends State<CreateDiscountDialog> {
+class _CreateDiscountDialogState extends ConsumerState<CreateDiscountDialog> {
   final disTitleCtr = TextEditingController();
   final disInPercentageCtr = TextEditingController();
   final validFromCtr = TextEditingController();
@@ -55,6 +58,7 @@ class _CreateDiscountDialogState extends State<CreateDiscountDialog> {
 
   @override
   Widget build(BuildContext context) {
+    final discountController = ref.watch(discountProvider);
     return Container(
       height: 530,
       width: 584,
@@ -155,7 +159,13 @@ class _CreateDiscountDialogState extends State<CreateDiscountDialog> {
                 ),
                 padding12,
                 CustomButton(
-                  onPressed: () {},
+                  onPressed: () {
+                       discountController.saveDiscount({
+                      
+                      
+                      });
+                      Navigator.pop(context);
+                  },
                   buttonText: 'Create',
                   buttonHeight: 48,
                   buttonWidth: 141,

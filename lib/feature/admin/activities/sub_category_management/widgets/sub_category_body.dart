@@ -5,6 +5,7 @@ import 'package:admin_boda/commons/common_widgets/category_card.dart';
 import 'package:admin_boda/commons/common_widgets/custom_button.dart';
 import 'package:admin_boda/commons/common_widgets/show_dialog.dart';
 import 'package:admin_boda/feature/admin/activities/sub_category_management/dialog/add_sub_cat_dialog.dart';
+import 'package:admin_boda/utils/loading.dart';
 
 import '../../../../../models/inventry/sub_category_model.dart';
 import '../controller/sub_category_controller.dart';
@@ -51,7 +52,7 @@ class _SubCategoryBody extends ConsumerState<SubCategoryBody> {
                 future: subCategoryController.fetchSubCategories(),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const Center(child: CircularProgressIndicator());
+                    return const LoadingWidget();
                   } else if (snapshot.hasError) {
                     return Center(child: Text(snapshot.error.toString()));
                   } else if (!snapshot.hasData) {

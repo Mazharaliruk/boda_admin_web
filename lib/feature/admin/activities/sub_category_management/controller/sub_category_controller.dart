@@ -10,6 +10,8 @@ final subCategoryManagementProvider = ChangeNotifierProvider((ref) => SubCategor
 class SubCategoryController extends ChangeNotifier {
 final _categoryRepo = SubCategoryRepository();
 
+  var selectedSubCategory;
+
 
 
 

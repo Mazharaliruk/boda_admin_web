@@ -5,6 +5,11 @@ import 'package:admin_boda/commons/common_widgets/custom_button.dart';
 import 'package:admin_boda/commons/common_widgets/show_dialog.dart';
 import 'package:admin_boda/feature/admin/promotion/discount_management/dialog/apply_discount_dialog.dart';
 import 'package:admin_boda/feature/admin/promotion/discount_management/dialog/create_discount_dialog.dart';
+import 'package:intl/intl.dart';
+
+import '../../../../../models/inventry/discount_model.dart';
+import '../../../../../utils/loading.dart';
+import '../controller/discount_controller.dart';
 
 class DiscountBody extends ConsumerStatefulWidget {
   const DiscountBody({super.key});
@@ -16,6 +21,7 @@ class DiscountBody extends ConsumerStatefulWidget {
 class _DiscountBodyState extends ConsumerState<DiscountBody> {
   @override
   Widget build(BuildContext context) {
+    final discountcontroller = ref.watch(discountProvider);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -87,138 +93,162 @@ class _DiscountBodyState extends ConsumerState<DiscountBody> {
           ),
         ),
         Expanded(
-          child: ListView.builder(
-              itemCount: 20,
-              shrinkWrap: true,
-              physics: const BouncingScrollPhysics(),
-              padding: const EdgeInsets.only(top: 20, bottom: 100),
-              itemBuilder: (context, index) {
-                return Column(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(left: 20, right: 0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          child: FutureBuilder<List<DiscountModel>>(
+              future: discountcontroller.fetchDiscount(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const LoadingWidget();
+                } else if (!snapshot.hasData) {
+                  return const Text("Discount Not Found");
+                }
+                return ListView.builder(
+                    itemCount: snapshot.data!.length,
+                    shrinkWrap: true,
+                    physics: const BouncingScrollPhysics(),
+                    padding: const EdgeInsets.only(top: 20, bottom: 100),
+                    itemBuilder: (context, index) {
+                      final discoutModel = snapshot.data![index];
+                      return Column(
                         children: [
-                          SizedBox(
-                            width: 140,
-                            child: Text('Flat 20% Off',
-                                textAlign: TextAlign.start,
-                                style: getBoldStyle(
-                                    color: context.blackColor,
-                                    fontSize: MyFonts.size8)),
-                          ),
-                          SizedBox(
-                            width: 140,
-                            child: Text('      30',
-                                textAlign: TextAlign.start,
-                                style: getBoldStyle(
-                                    color: context.blackColor,
-                                    fontSize: MyFonts.size8)),
-                          ),
-                          Container(
-                            margin: const EdgeInsets.only(right: 100),
-                            height: 20,
-                            width: 54,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(2),
-                              color: MyColors.lightGreen.withOpacity(0.2),
-                              border: Border.all(color: MyColors.lightGreen),
-                            ),
-                            child: Center(
-                              child: Text(
-                                'Yes',
-                                style: getBoldStyle(
-                                    color: context.blackColor,
-                                    fontSize: MyFonts.size8),
-                              ),
-                            ),
-                          ),
-                          SizedBox(
-                            width: 140,
-                            child: Text('4',
-                                textAlign: TextAlign.center,
-                                style: getBoldStyle(
-                                    color: context.blackColor,
-                                    fontSize: MyFonts.size8)),
-                          ),
-                          SizedBox(
-                            width: 140,
-                            child: Text('13/07/2024 - TO -13/07/2024',
-                                textAlign: TextAlign.start,
-                                style: getBoldStyle(
-                                    color: context.blackColor,
-                                    fontSize: MyFonts.size8)),
-                          ),
-                          Row(
-                            children: [
-                              InkWell(
-                                overlayColor: MaterialStateProperty.all(
-                                    MyColors.transparentColor),
-                                onTap: () {
-                                  showCustomDialog(
-                                      context: context,
-                                      content: const CreateDiscountDialog(
-                                          isEdit: true));
-                                },
-                                child: Container(
+                          Padding(
+                            padding: const EdgeInsets.only(left: 20, right: 0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                SizedBox(
+                                  width: 140,
+                                  child: Text(discoutModel.name,
+                                      textAlign: TextAlign.start,
+                                      style: getBoldStyle(
+                                          color: context.blackColor,
+                                          fontSize: MyFonts.size8)),
+                                ),
+                                SizedBox(
+                                  width: 140,
+                                  child: Text(
+                                      '${discoutModel.discount_percent}',
+                                      textAlign: TextAlign.start,
+                                      style: getBoldStyle(
+                                          color: context.blackColor,
+                                          fontSize: MyFonts.size8)),
+                                ),
+                                Container(
+                                  margin: const EdgeInsets.only(right: 100),
                                   height: 20,
-                                  width: 55,
+                                  width: 54,
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(2),
-                                    border: Border.all(
-                                        color: context.secondary, width: 1.5),
+                                    color: MyColors.lightGreen.withOpacity(0.2),
+                                    border:
+                                        Border.all(color: MyColors.lightGreen),
                                   ),
                                   child: Center(
                                     child: Text(
-                                      'Manage',
+                                      discoutModel.is_active ? 'Yes' : "No",
                                       style: getBoldStyle(
-                                          color: context.secondary,
+                                          color: context.blackColor,
                                           fontSize: MyFonts.size8),
                                     ),
                                   ),
                                 ),
-                              ),
-                              padding6,
-                              InkWell(
-                                overlayColor: MaterialStateProperty.all(
-                                    MyColors.transparentColor),
-                                onTap: () {
-                                  showCustomDialog(
-                                      context: context,
-                                      content: const ApplyDiscountDialog());
-                                },
-                                child: Container(
-                                  height: 20,
-                                  width: 55,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(2),
-                                    border: Border.all(
-                                        color: context.secondary, width: 1.5),
-                                  ),
-                                  child: Center(
-                                    child: Text(
-                                      'Apply',
+                                SizedBox(
+                                  width: 140,
+                                  child: Text('4',
+                                      textAlign: TextAlign.center,
                                       style: getBoldStyle(
-                                          color: context.secondary,
-                                          fontSize: MyFonts.size8),
-                                    ),
-                                  ),
+                                          color: context.blackColor,
+                                          fontSize: MyFonts.size8)),
                                 ),
-                              ),
-                            ],
+                                SizedBox(
+                                  width: 140,
+                                  child: Text(
+                                      discoutModel.start_date != null &&
+                                              discoutModel.end_date != null
+                                          ? """
+                                            "${DateFormat('dd/MM/yyyy').format(discoutModel.start_date!)} 
+                                            - TO ${DateFormat('dd/MM/yyyy').format(discoutModel.end_date!)}"
+                                          """
+                                          : "N/A",
+                                      textAlign: TextAlign.start,
+                                      style: getBoldStyle(
+                                          color: context.blackColor,
+                                          fontSize: MyFonts.size8)),
+                                ),
+                                Row(
+                                  children: [
+                                    InkWell(
+                                      overlayColor: MaterialStateProperty.all(
+                                          MyColors.transparentColor),
+                                      onTap: () {
+                                        showCustomDialog(
+                                            context: context,
+                                            content: const CreateDiscountDialog(
+                                                isEdit: true));
+                                      },
+                                      child: Container(
+                                        height: 20,
+                                        width: 55,
+                                        decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(2),
+                                          border: Border.all(
+                                              color: context.secondary,
+                                              width: 1.5),
+                                        ),
+                                        child: Center(
+                                          child: Text(
+                                            'Manage',
+                                            style: getBoldStyle(
+                                                color: context.secondary,
+                                                fontSize: MyFonts.size8),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    padding6,
+                                    InkWell(
+                                      overlayColor: MaterialStateProperty.all(
+                                          MyColors.transparentColor),
+                                      onTap: () {
+                                        showCustomDialog(
+                                            context: context,
+                                            content:
+                                                const ApplyDiscountDialog());
+                                      },
+                                      child: Container(
+                                        height: 20,
+                                        width: 55,
+                                        decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(2),
+                                          border: Border.all(
+                                              color: context.secondary,
+                                              width: 1.5),
+                                        ),
+                                        child: Center(
+                                          child: Text(
+                                            'Apply',
+                                            style: getBoldStyle(
+                                                color: context.secondary,
+                                                fontSize: MyFonts.size8),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 8),
+                            child: Divider(
+                              color: context.lightGreyColor,
+                            ),
                           ),
                         ],
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 8),
-                      child: Divider(
-                        color: context.lightGreyColor,
-                      ),
-                    ),
-                  ],
-                );
+                      );
+                    });
               }),
         )
       ],

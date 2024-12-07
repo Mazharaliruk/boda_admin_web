@@ -10,6 +10,10 @@ import 'package:admin_boda/utils/constants/assets_manager.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:image_picker/image_picker.dart';
 
+import '../../../../../commons/common_widgets/custom_dropdown_text_field.dart';
+import '../../../../../models/inventry/categories_model.dart';
+import '../../../../../utils/error_screen.dart';
+import '../../../../../utils/loading.dart';
 import '../../category_management/controller/category_management_controller.dart';
 import '../controller/sub_category_controller.dart';
 
@@ -35,7 +39,6 @@ class _AddSubCategoryDialogState extends ConsumerState<AddSubCategoryDialog> {
     subCateTitle.dispose();
     description.dispose();
     categoryCtr.dispose();
-
   }
 
   @override
@@ -100,16 +103,50 @@ class _AddSubCategoryDialogState extends ConsumerState<AddSubCategoryDialog> {
                 hintText: 'Enter Title',
                 label: 'Title',
               ),
-              CustomTextField(
-                
-                fillColor: context.whiteColor,
-                verticalPadding: 10,
-                controller: description,
-                tailingIconPath: AppAssets.dropDownSvgIcon,
-                hintText: 'Select Category',
-                label: 'Category',
-                enabled: false,
-              ),
+
+              FutureBuilder<List<CategoriesModel>>(
+                  future: categroyController.fetchCategories(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const LoadingWidget();
+                    } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                      return const ErrorScreen();
+                    }
+
+                    return CustomDropdownField<CategoriesModel>(
+                      value: subCategoryController
+                          .selectedSubCategory, // Track the selected subcategory
+                      onChanged: (CategoriesModel? selectedSubCategory) {
+                        if (selectedSubCategory != null) {
+                          // Update text controller with the selected subcategory name
+                          categoryCtr.text = selectedSubCategory.name;
+
+                          // Optionally, store the entire selected subcategory object
+                          subCategoryController.selectedSubCategory =
+                              selectedSubCategory;
+                        }
+                      },
+                      items: snapshot
+                          .data!, // Pass entire SubCategoryModel objects
+                      fillColor: context.whiteColor,
+                      verticalPadding: 10,
+                      hintText: 'Select Category',
+                      label: 'Category',
+                      enabled: true, // Changed to true to allow selection
+                      validatorFn: (CategoriesModel? value) {
+                        // Optional validator
+                        if (value == null) {
+                          return 'Please select a category';
+                        }
+                        return null;
+                      },
+                      // Custom item builder to display subcategory name
+                      itemBuilder: (CategoriesModel subcategory) {
+                        return Text(subcategory.name);
+                      },
+                    );
+                  }),
+            
               CustomTextField(
                 fillColor: context.whiteColor,
                 verticalPadding: 10,
@@ -123,7 +160,9 @@ class _AddSubCategoryDialogState extends ConsumerState<AddSubCategoryDialog> {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   CustomButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
                     buttonText: 'Cancel',
                     buttonHeight: 48,
                     buttonWidth: 141,
@@ -135,13 +174,13 @@ class _AddSubCategoryDialogState extends ConsumerState<AddSubCategoryDialog> {
                   padding12,
                   CustomButton(
                     onPressed: () {
-                      subCategoryController.saveSubCategory(
-                      {
+                      subCategoryController.saveSubCategory({
                         "name": subCateTitle.text,
                         "description": description.text,
-                        "category_id":""
-                      },
-                     File(pickedFile!.path));
+                        "category": subCategoryController
+                            .selectedSubCategory!.id,
+                      }, File(pickedFile!.path));
+                      Navigator.pop(context);
                     },
                     buttonText: 'Save',
                     buttonHeight: 48,
