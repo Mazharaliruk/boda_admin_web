@@ -83,16 +83,44 @@ class AuthRepo {
 
 
   /// Logs out the user by clearing stored tokens.
-  Future<void> logout() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.remove('accessToken');
-    await prefs.remove('refreshToken');
+Future<void> logout(String refreshToken) async {
+   const String url = ApiUrls.logout;
+   print(refreshToken);
+   
 
-    _accessToken = null;
-    _refreshToken = null;
 
-    print('User logged out successfully.');
+  try {
+    // Make a POST request to the logout endpoint
+    final response = await http.post(
+      Uri.parse(url),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $refreshToken', // Optional if needed
+      },
+      body: jsonEncode({
+        'refresh_token': refreshToken,
+      }),
+    );
+
+    if (response.statusCode == 200) {
+      // Successfully logged out
+      print('Logout successful');
+      
+      // Clear user data locally
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.clear();
+
+      // Navigate to the login screen or clear stack
+      // Example: Navigator.pushReplacementNamed(context, '/login');
+    } else {
+      // Handle logout failure
+      print('Logout failed: ${response.body}');
+    }
+  } catch (e) {
+    // Handle network errors
+    print('Error during logout: $e');
   }
+}
 
   /// Checks if the user is already logged in by verifying stored tokens.
   Future<bool> isLoggedIn() async {

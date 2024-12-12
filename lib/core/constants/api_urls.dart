@@ -8,13 +8,23 @@ class ApiUrls {
     return accessToken;
   }
 
+
+    static Future<String?> getrefreshToken() async {
+    final prefs = await SharedPreferences.getInstance();
+    
+
+    final refreshToken = prefs.getString('refreshToken');
+    return refreshToken;
+  }
+
+
  
   static const String baseUrl = "http://127.0.0.1:8000/";
 
   // user endpoints
   static const String login = "${baseUrl}api/user/login/";
   static const String register = "${baseUrl}api/user/register/";
-  static const String logout = "${baseUrl}api/user/logout/s";
+  static const String logout = "${baseUrl}api/user/logout/";
   static const String profile = "${baseUrl}api/user/profile/";
 
   // Inventry endpoints
