@@ -1,12 +1,11 @@
-import 'dart:io';
-import 'package:flutter/foundation.dart';
 import 'package:admin_boda/commons/common_functions/padding.dart';
 import 'package:admin_boda/commons/common_imports/apis_commons.dart';
 import 'package:admin_boda/commons/common_imports/common_libs.dart';
 import 'package:admin_boda/utils/constants/assets_manager.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:video_player/video_player.dart';
+import 'package:media_kit/media_kit.dart';
+import 'package:media_kit_video/media_kit_video.dart';
 
 class UploadVideoWidget extends ConsumerStatefulWidget {
   const UploadVideoWidget({
@@ -26,35 +25,31 @@ class UploadVideoWidget extends ConsumerStatefulWidget {
 
 class _UploadVideoWidgetState extends ConsumerState<UploadVideoWidget> {
   XFile? pickedFile;
-  VideoPlayerController? videoController;
+  late final Player player;
+  late final VideoController videoController;
   bool _isLoading = false;
 
-  // Platform-specific video initialization
+  @override
+  void initState() {
+    super.initState();
+    // Initialize player and video controller
+    player = Player();
+    videoController = VideoController(player);
+  }
+
+  // Function to initialize video player
   Future<void> initializeVideoPlayer(XFile file) async {
     try {
-      // Dispose of any existing controller
-      await videoController?.dispose();
-
-      // Platform-specific initialization
-      if (kIsWeb) {
-        // For web, use network path
-        videoController = VideoPlayerController.networkUrl(
-          Uri.parse(file.path),
-        );
-      } else {
-        // For mobile platforms, use file
-        videoController = VideoPlayerController.file(
-          File(file.path),
-        );
-      }
-
-      // Initialize the controller
-      await videoController?.initialize();
+      // Dispose of any existing media
       
-      // Additional configuration
-      await videoController?.setLooping(true);
-      videoController?.play();
 
+      // Recreate player and video controller
+      // player = Player();
+      // videoController = VideoController(player);
+
+      // Open the selected video file
+      await player.open(Media('file://${file.path}'));
+      
       // Update state
       setState(() {
         pickedFile = file;
@@ -66,7 +61,7 @@ class _UploadVideoWidgetState extends ConsumerState<UploadVideoWidget> {
     } catch (e) {
       print('Detailed Video Initialization Error: $e');
       
-      // Provide more detailed error feedback
+      // Provide error feedback
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('Failed to initialize video: ${e.toString()}'),
@@ -76,8 +71,8 @@ class _UploadVideoWidgetState extends ConsumerState<UploadVideoWidget> {
 
       setState(() {
         _isLoading = false;
-        videoController = null;
         pickedFile = null;
+     
       });
     }
   }
@@ -88,7 +83,6 @@ class _UploadVideoWidgetState extends ConsumerState<UploadVideoWidget> {
     setState(() {
       _isLoading = true;
       pickedFile = null;
-      videoController = null;
     });
 
     try {
@@ -123,7 +117,7 @@ class _UploadVideoWidgetState extends ConsumerState<UploadVideoWidget> {
 
   @override
   void dispose() {
-    videoController?.dispose();
+    player.dispose();
     super.dispose();
   }
 
@@ -143,29 +137,31 @@ class _UploadVideoWidgetState extends ConsumerState<UploadVideoWidget> {
           width: 360,
           child: _isLoading
               ? const Center(child: CircularProgressIndicator())
-              : pickedFile != null && videoController != null
+              : pickedFile != null
                   ? Stack(
                       alignment: Alignment.center,
                       children: [
-                        AspectRatio(
-                          aspectRatio: videoController!.value.aspectRatio,
-                          child: VideoPlayer(videoController!),
+                        Video(
+                          controller: videoController,
+                          width: 360,
+                          height: 200,
+                          fit: BoxFit.contain,
                         ),
                         Positioned(
                           child: IconButton(
                             iconSize: 50,
                             icon: Icon(
-                              videoController!.value.isPlaying
+                              player.state.playing
                                   ? Icons.pause_circle_filled
                                   : Icons.play_circle_fill,
                               color: Colors.white,
                             ),
                             onPressed: () {
                               setState(() {
-                                if (videoController!.value.isPlaying) {
-                                  videoController!.pause();
+                                if (player.state.playing) {
+                                  player.pause();
                                 } else {
-                                  videoController!.play();
+                                  player.play();
                                 }
                               });
                             },
