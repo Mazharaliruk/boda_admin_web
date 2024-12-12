@@ -5,10 +5,13 @@ import 'package:http/http.dart' as http;
 import '../../../core/constants/api_urls.dart';
 import '../../../models/inventry/categories_model.dart';
 import '../../../utils/exceptions/common_exception.dart';
-  Map<String, String> getHeaders() {
+  Future<Map<String, String>> getHeaders() async{
+    if (await ApiUrls.getAccessToken() == null) {
+      throw UnauthorizedException('Access token is missing. User might not be logged in.');
+    }
     return {
       'Content-Type': 'application/json',
-      'authorization': 'Bearer ${ApiUrls.accessToken}',
+      'authorization': 'Bearer ${await ApiUrls.getAccessToken()}',
      
     };
   }
@@ -21,7 +24,7 @@ Future<List<CategoriesModel>> fetchCategories() async {
   const String url = ApiUrls.categories;
 
   try {
-    final response = await http.get(Uri.parse(url), headers: getHeaders());
+    final response = await http.get(Uri.parse(url), headers:await getHeaders());
 
     // Check response status
     switch (response.statusCode) {
@@ -78,7 +81,7 @@ Future<void> saveCategory(Map<String, dynamic> data, [File? imageFile]) async {
     var request = http.MultipartRequest('POST', Uri.parse(url));
 
     // Add headers
-    request.headers.addAll(getHeaders());
+    request.headers.addAll(await getHeaders());
 
     // Add fields
     data.forEach((key, value) {
@@ -141,7 +144,7 @@ Future<void> updateCategory(CategoriesModel data) async {
   try {
     final response = await http.put(
       Uri.parse(url),
-      headers: getHeaders(),
+      headers:await getHeaders(),
       body: json.encode(data.toMap()), // Ensure data is serialized correctly
     );
 
@@ -184,7 +187,7 @@ Future<void> deleteCategory(int id) async {
   try {
     final response = await http.delete(
       Uri.parse(url),
-      headers: getHeaders(),
+      headers:await getHeaders(),
     );
 
     // Handle response status codes

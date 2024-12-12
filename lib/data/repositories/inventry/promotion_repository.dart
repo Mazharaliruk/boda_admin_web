@@ -16,7 +16,7 @@ class PromotionRepository {
   const String url = ApiUrls.promotion;
 
   try {
-    final response = await http.get(Uri.parse(url), headers: getHeaders());
+    final response = await http.get(Uri.parse(url), headers:await getHeaders());
 
     // Check response status
     switch (response.statusCode) {
@@ -70,7 +70,7 @@ Future<PromotionModel> createPromotion(PromotionModel promotion) async {
   try {
     final response = await http.post(
       Uri.parse(url),
-      headers: getHeaders(),
+      headers:await getHeaders(),
       body: json.encode(promotion.toMap()), // Serialize model to JSON
     );
 
@@ -105,7 +105,7 @@ Future<PromotionModel> updatePromotion(PromotionModel promotion) async {
   try {
     final response = await http.put(
       Uri.parse(url),
-      headers: getHeaders(),
+      headers:await getHeaders(),
       body: json.encode(promotion.toMap()), // Serialize model to JSON
     );
 
@@ -143,7 +143,7 @@ Future<void> deletePromotion(int promotionId) async {
   try {
     final response = await http.delete(
       Uri.parse(url),
-      headers: getHeaders(),
+      headers:await getHeaders(),
     );
 
     switch (response.statusCode) {

@@ -6,12 +6,14 @@ import 'package:admin_boda/utils/constants/app_constants.dart';
 import 'package:admin_boda/utils/themes/theme.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:video_player_media_kit/video_player_media_kit.dart';
+import 'package:admin_boda/feature/admin/main_menu/view/main_menu_screen.dart';
 
-void main() {
+import 'feature/auth/controller/auth_controller.dart';
 
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-     MediaKit.ensureInitialized();
-    VideoPlayerMediaKit.ensureInitialized(
+  MediaKit.ensureInitialized();
+  VideoPlayerMediaKit.ensureInitialized(
     macOS: true,
     windows: true,
     linux: true,
@@ -19,20 +21,25 @@ void main() {
     android: true,
     iOS: true,
   );
-  Future.delayed(const Duration(seconds: 4), () async {});
 
-  runApp(const ProviderScope(child: MyApp()));
+  // Run the app inside ProviderScope to use Riverpod
+  runApp(
+    const ProviderScope(
+      child: MyApp(),
+    ),
+  );
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends ConsumerWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+
+    // Check if the user is logged in
+
     return ScreenUtilInit(
-      designSize:
-          const Size(AppConstants.screenWidget, AppConstants.screenHeight),
+      designSize: const Size(AppConstants.screenWidget, AppConstants.screenHeight),
       minTextAdapt: true,
       splitScreenMode: true,
       builder: (context, child) {
@@ -42,10 +49,26 @@ class MyApp extends StatelessWidget {
           theme: lightThemeData(context),
           themeMode: ThemeMode.light,
           onGenerateRoute: AppRoutes.onGenerateRoute,
-          home: const SignInScreen(),
+          // Check if user is logged in and decide the initial screen
+          home:FutureBuilder<bool>(
+            future: ref.read(authContoller.notifier).isLoggedIn(),
+            builder: (context, snapshot) {
+              // Check the state of the Future
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(child: CircularProgressIndicator());
+              } else if (snapshot.hasError) {
+                return const Center(child: Text('Error checking login status.'));
+              } else if (snapshot.data == true) {
+                return const MainMenuScreen();
+              } else {
+                return const SignInScreen();
+              }
+            },
+          ),
+        
         );
-
       },
     );
   }
 }
+

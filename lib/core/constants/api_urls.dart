@@ -1,11 +1,21 @@
-class ApiUrls{
-  static const String accessToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzMzOTczNzQ0LCJpYXQiOjE3MzM5NzAxNDQsImp0aSI6IjgxNGNmOWVjNzU3YTRlOGRiZjU3YTg2NzYwNmE4NzUzIiwidXNlcl9pZCI6Mn0.pL0crfoJ_7Y_rqmmZvco8oFHQhTI7cUNZuqlQLYNrv0";
+import 'package:shared_preferences/shared_preferences.dart';
+
+class ApiUrls {
+  static Future<String?> getAccessToken() async {
+    final prefs = await SharedPreferences.getInstance();
+
+    final accessToken = prefs.getString('accessToken');
+    return accessToken;
+  }
+
+ 
   static const String baseUrl = "http://127.0.0.1:8000/";
 
-
   // user endpoints
-  static const String login = "${baseUrl}api/user/login";
-  static const String register = "${baseUrl}api/user/register";
+  static const String login = "${baseUrl}api/user/login/";
+  static const String register = "${baseUrl}api/user/register/";
+  static const String logout = "${baseUrl}api/user/logout/s";
+  static const String profile = "${baseUrl}api/user/profile/";
 
   // Inventry endpoints
   static const String inventry = "${baseUrl}inventry/v1/";
@@ -35,5 +45,4 @@ class ApiUrls{
   static const String aiRecommendation = "${core}AIRecommendation/";
   static const String chatroom = "${core}chatrooms/";
   static const String messages = "${core}messages/";
-
 }

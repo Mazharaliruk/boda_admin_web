@@ -1,0 +1,104 @@
+import 'dart:convert';
+import 'package:admin_boda/commons/common_imports/common_libs.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:http/http.dart' as http;
+
+import '../../../core/constants/api_urls.dart';
+import '../../../models/account/admin_profile.dart';
+import '../../../routes/route_manager.dart';
+import '../../../utils/exceptions/common_exception.dart';
+import '../inventry/category_repository.dart';
+
+class AuthRepo {
+  String? _accessToken;
+  String? _refreshToken;
+
+  /// Fetches the admin profile using the stored access token.
+  Future<AdminProfile> fetchAdminProfile() async {
+    const String url = ApiUrls.profile;
+
+    try {
+      final response = await http.get(
+        Uri.parse(url),
+        headers: await getHeaders(),
+      );
+
+      switch (response.statusCode) {
+        case 200:
+          final data = json.decode(response.body);
+          return AdminProfile.fromMap(data);
+        case 401:
+          throw UnauthorizedException(
+              'Unauthorized: Invalid or missing token.');
+        case 404:
+          throw NotFoundException(
+              'Not Found: The requested resource was not found.');
+        default:
+          throw CommonException(
+              'Failed with status code ${response.statusCode}.');
+      }
+    } catch (e) {
+      throw CommonException('An unexpected error occurred: $e');
+    }
+  }
+
+  Future<void> login(String email, String password, BuildContext context) async {
+  const String url = ApiUrls.login;
+
+  try {
+    final response = await http.post(
+      Uri.parse(url),
+      headers: {'Content-Type': 'application/json'},
+      body: json.encode({'email': email, 'password': password, 'role': "admin"}),
+    );
+
+    print('Response Status: ${response.statusCode}');
+    print('Response Body: ${response.body}');
+
+    switch (response.statusCode) {
+      case 200:
+        final data = json.decode(response.body);
+        _accessToken = data['token']['access'];
+        _refreshToken = data['token']['refresh'];
+
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.setString('accessToken', _accessToken!);
+        await prefs.setString('refreshToken', _refreshToken!);
+
+        Navigator.pushNamed(context, AppRoutes.mainMenuScreen);
+        break;
+      case 403:
+        final errorData = json.decode(response.body);
+        throw ForbiddenException(errorData['message'] ?? 'Forbidden access.');
+      case 400:
+        throw BadRequestException('Invalid credentials.');
+      default:
+        throw CommonException('Unexpected error occurred.');
+    }
+  } catch (e) {
+    print('Login error: $e');
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('$e')));
+  }
+}
+
+
+  /// Logs out the user by clearing stored tokens.
+  Future<void> logout() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove('accessToken');
+    await prefs.remove('refreshToken');
+
+    _accessToken = null;
+    _refreshToken = null;
+
+    print('User logged out successfully.');
+  }
+
+  /// Checks if the user is already logged in by verifying stored tokens.
+  Future<bool> isLoggedIn() async {
+    final prefs = await SharedPreferences.getInstance();
+    _accessToken = prefs.getString('accessToken');
+    _refreshToken = prefs.getString('refreshToken');
+    return _accessToken != null;
+  }
+}

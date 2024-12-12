@@ -13,7 +13,7 @@ Future<List<SubCategoryModel>> fetchSubCategories() async {
   const String url = ApiUrls.subCategories;
 
   try {
-    final response = await http.get(Uri.parse(url), headers: getHeaders());
+    final response = await http.get(Uri.parse(url), headers:await getHeaders());
 
     // Check response status
     switch (response.statusCode) {
@@ -71,7 +71,7 @@ Future<void> saveSubCategory(Map<String, dynamic> data, [File? imageFile]) async
     var request = http.MultipartRequest('POST', Uri.parse(url));
 
     // Add headers
-    request.headers.addAll(getHeaders());
+    request.headers.addAll(await getHeaders());
 
     // Add fields
     data.forEach((key, value) {
@@ -134,7 +134,7 @@ Future<void> updateSubCategory(SubCategoryModel data) async {
   try {
     final response = await http.put(
       Uri.parse(url),
-      headers: getHeaders(),
+      headers:await getHeaders(),
       body: json.encode(data.toMap()), // Ensure data is serialized correctly
     );
 
@@ -177,7 +177,7 @@ Future<void> deleteSubCategory(int id) async {
   try {
     final response = await http.delete(
       Uri.parse(url),
-      headers: getHeaders(),
+      headers:await getHeaders(),
     );
 
     // Handle response status codes
