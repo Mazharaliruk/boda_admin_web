@@ -31,7 +31,8 @@ MainMenuController get mainMenuController => ref.read(mainMenuProvider);
 
   // Handle logout
   Future<void> logout() async {
-    await _authRepo.logout(await ApiUrls.getrefreshToken()??"");
+    
+    await _authRepo.logout(await ApiUrls.getrefreshToken()??"",await ApiUrls.getAccessToken()??"");
      mainMenuController.setIndex(0);
     mainMenuController.setTogelOtherScreen(false, 'Login');
     notifyListeners(); 

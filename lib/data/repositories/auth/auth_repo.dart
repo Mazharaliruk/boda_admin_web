@@ -52,12 +52,13 @@ class AuthRepo {
       body: json.encode({'email': email, 'password': password, 'role': "admin"}),
     );
 
-    print('Response Status: ${response.statusCode}');
-    print('Response Body: ${response.body}');
+
 
     switch (response.statusCode) {
       case 200:
         final data = json.decode(response.body);
+        print(data['token']['access']);
+        print(data['token']['refresh']);
         _accessToken = data['token']['access'];
         _refreshToken = data['token']['refresh'];
 
@@ -83,7 +84,7 @@ class AuthRepo {
 
 
   /// Logs out the user by clearing stored tokens.
-Future<void> logout(String refreshToken) async {
+Future<void> logout(String refreshToken, String accessToken) async {
    const String url = ApiUrls.logout;
    print(refreshToken);
    
@@ -95,7 +96,7 @@ Future<void> logout(String refreshToken) async {
       Uri.parse(url),
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': 'Bearer $refreshToken', // Optional if needed
+        'Authorization': 'Bearer $accessToken', // Optional if needed
       },
       body: jsonEncode({
         'refresh_token': refreshToken,
