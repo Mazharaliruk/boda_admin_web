@@ -8,6 +8,7 @@ import 'package:admin_boda/utils/constants/assets_manager.dart';
 import 'package:flutter_popup/flutter_popup.dart';
 import 'package:flutter_svg/svg.dart';
 
+import '../../../../../models/inventry/promotion_model.dart';
 import '../controller/promotion_controller.dart';
 
 class BannerBody extends ConsumerStatefulWidget {
@@ -20,7 +21,7 @@ class BannerBody extends ConsumerStatefulWidget {
 class _LoyaltyBodyState extends ConsumerState<BannerBody> {
   @override
   Widget build(BuildContext context) {
-        final discountcontroller = ref.watch(promotionProvider);
+        final promotionController = ref.watch(promotionProvider);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -45,7 +46,7 @@ class _LoyaltyBodyState extends ConsumerState<BannerBody> {
             CustomPopup(
               barrierColor: context.primary.withOpacity(0.1),
               backgroundColor: Colors.white,
-              content: BannerPopup(),
+              content: const BannerPopup(),
               child: Container(
                   width: 150,
                   height: 35,
@@ -76,16 +77,26 @@ class _LoyaltyBodyState extends ConsumerState<BannerBody> {
             color: context.whiteColor,
           ),
           padding: EdgeInsets.all(AppConstants.padding),
-          child: GridView.builder(
-              itemCount: 2,
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  mainAxisExtent: 350,
-                  mainAxisSpacing: 10,
-                  crossAxisSpacing: 10),
-              itemBuilder: (context, index) {
-                return const BannerCard();
-              }),
+          child: FutureBuilder<List<PromotionModel>>(
+            future: promotionController.fetchPromotion(),
+            builder: (context, snapshot) {
+              if(snapshot.connectionState == ConnectionState.waiting){
+                return const Center(child: CircularProgressIndicator());
+              }else if(!snapshot.hasData){
+                return const Text("No Promotion Found");
+              }
+              return GridView.builder(
+                  itemCount: snapshot.data!.length,
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      mainAxisExtent: 350,
+                      mainAxisSpacing: 10,
+                      crossAxisSpacing: 10),
+                  itemBuilder: (context, index) {
+                    return  BannerCard(promotionModel: snapshot.data![index],);
+                  });
+            }
+          ),
         ))
       ],
     );

@@ -130,4 +130,25 @@ Future<void> logout(String refreshToken, String accessToken) async {
     _refreshToken = prefs.getString('refreshToken');
     return _accessToken != null;
   }
+
+
+
+ bool isTokenExpired(String token) {
+  print(token);
+  final parts = token.split('.');
+  if (parts.length != 3) {
+    throw Exception('Invalid token');
+  }
+
+  final payload = utf8.decode(base64Url.decode(base64Url.normalize(parts[1])));
+  final payloadMap = json.decode(payload) as Map<String, dynamic>;
+
+  if (!payloadMap.containsKey('exp')) {
+    throw Exception('Invalid token payload');
+  }
+
+  final expiry = DateTime.fromMillisecondsSinceEpoch(payloadMap['exp'] * 1000);
+  return expiry.isBefore(DateTime.now());
+}
+
 }

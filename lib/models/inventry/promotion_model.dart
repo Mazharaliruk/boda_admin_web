@@ -8,7 +8,7 @@ class PromotionModel {
   String name;
   DateTime created_at;
   DateTime updated_at;
-  int vendor_id;
+  int? vendor_id;
   String? image_url;
   String? video_url;
   String? description;
@@ -84,7 +84,7 @@ class PromotionModel {
       name: map['name'] as String,
       created_at: DateTime.parse(map['created_at'] as String),
       updated_at: DateTime.parse(map['updated_at'] as String),
-      vendor_id: map['vendor_id'] as int,
+      vendor_id: map['vendor_id'] != null ? map['vendor_id'] as int : null,
       image_url: map['image_url'] != null ? map['image_url'] as String : null,
       video_url: map['video_url'] != null ? map['video_url'] as String : null,
       description: map['description'] != null ? map['description'] as String : null,
@@ -108,35 +108,34 @@ class PromotionModel {
   @override
   bool operator ==(covariant PromotionModel other) {
     if (identical(this, other)) return true;
-  
-    return 
-      other.id == id &&
-      other.name == name &&
-      other.created_at == created_at &&
-      other.updated_at == updated_at &&
-      other.vendor_id == vendor_id &&
-      other.image_url == image_url &&
-      other.video_url == video_url &&
-      other.description == description &&
-      other.is_active == is_active &&
-      other.discount_percent == discount_percent &&
-      other.start_date == start_date &&
-      other.end_date == end_date;
+
+    return other.id == id &&
+        other.name == name &&
+        other.created_at == created_at &&
+        other.updated_at == updated_at &&
+        other.vendor_id == vendor_id &&
+        other.image_url == image_url &&
+        other.video_url == video_url &&
+        other.description == description &&
+        other.is_active == is_active &&
+        other.discount_percent == discount_percent &&
+        other.start_date == start_date &&
+        other.end_date == end_date;
   }
 
   @override
   int get hashCode {
     return id.hashCode ^
-      name.hashCode ^
-      created_at.hashCode ^
-      updated_at.hashCode ^
-      vendor_id.hashCode ^
-      image_url.hashCode ^
-      video_url.hashCode ^
-      description.hashCode ^
-      is_active.hashCode ^
-      discount_percent.hashCode ^
-      start_date.hashCode ^
-      end_date.hashCode;
+        name.hashCode ^
+        created_at.hashCode ^
+        updated_at.hashCode ^
+        vendor_id.hashCode ^
+        image_url.hashCode ^
+        video_url.hashCode ^
+        description.hashCode ^
+        is_active.hashCode ^
+        discount_percent.hashCode ^
+        start_date.hashCode ^
+        end_date.hashCode;
   }
 }

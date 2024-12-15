@@ -1,5 +1,6 @@
 import 'package:admin_boda/core/constants/api_urls.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../../../../commons/common_imports/apis_commons.dart';
 import '../../../../../commons/common_imports/common_libs.dart';
 import '../../../data/repositories/auth/auth_repo.dart';
@@ -40,4 +41,16 @@ MainMenuController get mainMenuController => ref.read(mainMenuProvider);
 
   // Check if the user is logged in
   Future<bool> isLoggedIn() async => await _authRepo.isLoggedIn();
+
+  bool isTokenExpired (String token) => _authRepo.isTokenExpired(token);
+
+  Future<String?> fetchAccessToken() async => await ApiUrls.getAccessToken();
+
+  clearTokens()async{
+          final SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.clear();
+
+      notifyListeners();
+  }
+
 }

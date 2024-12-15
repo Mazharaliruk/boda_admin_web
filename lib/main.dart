@@ -35,11 +35,12 @@ class MyApp extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-
+    final authController = ref.read(authContoller.notifier);
     // Check if the user is logged in
 
     return ScreenUtilInit(
-      designSize: const Size(AppConstants.screenWidget, AppConstants.screenHeight),
+      designSize:
+          const Size(AppConstants.screenWidget, AppConstants.screenHeight),
       minTextAdapt: true,
       splitScreenMode: true,
       builder: (context, child) {
@@ -50,25 +51,24 @@ class MyApp extends ConsumerWidget {
           themeMode: ThemeMode.light,
           onGenerateRoute: AppRoutes.onGenerateRoute,
           // Check if user is logged in and decide the initial screen
-          home:FutureBuilder<bool>(
-            future: ref.read(authContoller.notifier).isLoggedIn(),
-            builder: (context, snapshot) {
-              // Check the state of the Future
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return const Center(child: CircularProgressIndicator());
-              } else if (snapshot.hasError) {
-                return const Center(child: Text('Error checking login status.'));
-              } else if (snapshot.data == true) {
-                return const MainMenuScreen();
-              } else {
-                return const SignInScreen();
-              }
-            },
-          ),
-        
+          home: FutureBuilder<String?>(
+              future: ref.read(authContoller.notifier).fetchAccessToken(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+                } else if (!snapshot.hasData) {
+                  return const SignInScreen();
+                } else {
+                 
+                  if (authController.isTokenExpired(snapshot.data ?? "")) {
+                    print("Token expired");
+                    authController.clearTokens();
+                  }
+                  return const MainMenuScreen();
+                }
+              }),
         );
       },
     );
   }
 }
-

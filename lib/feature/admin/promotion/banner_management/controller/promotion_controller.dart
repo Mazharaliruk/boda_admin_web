@@ -1,5 +1,7 @@
 
 
+import 'dart:io';
+
 import 'package:admin_boda/data/repositories/inventry/promotion_repository.dart';
 
 import '../../../../../commons/common_imports/apis_commons.dart';
@@ -26,7 +28,7 @@ final _promotionRepo = PromotionRepository();
      await _promotionRepo.updatePromotion(data);
   }
 
-  Future<void> createPromotion(PromotionModel data)async{
-    _promotionRepo.createPromotion(data);
+  Future<void> createPromotion(Map<String, dynamic> data, [File? imageFile])async{
+    _promotionRepo.createPromotion(data , imageFile);
   }
 }
