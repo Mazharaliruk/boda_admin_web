@@ -59,6 +59,23 @@ class _CreateDiscountDialogState extends ConsumerState<CreateDiscountDialog> {
   }
 
   @override
+  void initState() {
+    // TODO: implement initState
+    
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    disTitleCtr.dispose();
+    disInPercentageCtr.dispose();
+    validFromCtr.dispose();
+    validToCtr.dispose();
+    
+    super.dispose();
+  }
+  @override
   Widget build(BuildContext context) {
     final discountController = ref.watch(discountProvider);
     return Container(
