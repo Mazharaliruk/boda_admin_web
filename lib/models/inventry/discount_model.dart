@@ -8,9 +8,9 @@ class DiscountModel {
    String name;
    DateTime created_at;
    DateTime updated_at;
-   int vendor_id;
-   int promotion;
-   int service;
+   int? vendor_id;
+   int? promotion;
+   int? service;
    String? image_url;
    String? description;
    bool is_active;
@@ -88,17 +88,17 @@ class DiscountModel {
     return DiscountModel(
       id: map['id'] as int,
       name: map['name'] as String,
-      created_at: DateTime.fromMillisecondsSinceEpoch(map['created_at'] as int),
-      updated_at: DateTime.fromMillisecondsSinceEpoch(map['updated_at'] as int),
-      vendor_id: map['vendor_id'] as int,
-      promotion: map['promotion'] as int,
-      service: map['service'] as int,
+      created_at: DateTime.parse(map['created_at'] as String),
+      updated_at: DateTime.parse(map['updated_at'] as String),
+      vendor_id: map['vendor_id'] != null ? map['vendor_id'] as int : null,
+      promotion: map['promotion'] != null ? map['promotion'] as int : null,
+      service: map['service'] != null ? map['service'] as int : null,
       image_url: map['image_url'] != null ? map['image_url'] as String : null,
       description: map['description'] != null ? map['description'] as String : null,
       is_active: map['is_active'] as bool,
       discount_percent: map['discount_percent'] != null ? map['discount_percent'] as double : null,
-      start_date: map['start_date'] != null ? DateTime.fromMillisecondsSinceEpoch(map['start_date'] as int) : null,
-      end_date: map['end_date'] != null ? DateTime.fromMillisecondsSinceEpoch(map['end_date'] as int) : null,
+      start_date: map['start_date'] != null ? DateTime.parse(map['start_date'] as String) : null,
+      end_date: map['end_date'] != null ? DateTime.parse(map['end_date'] as String) : null,
     );
   }
 

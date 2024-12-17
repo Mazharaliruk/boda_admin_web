@@ -8,9 +8,11 @@ import 'package:admin_boda/feature/admin/promotion/banner_management/dialog/upla
 import 'package:admin_boda/utils/constants/assets_manager.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
 
 import '../../../../../commons/common_imports/apis_commons.dart';
 import '../controller/promotion_controller.dart';
+import 'upload_image_widget.dart';
 
 class CreateBannerDialog extends ConsumerStatefulWidget {
   const CreateBannerDialog(
@@ -26,7 +28,42 @@ class _CreateBannerDialogState extends ConsumerState<CreateBannerDialog> {
   final ofTextCtr = TextEditingController();
   final titleCtr = TextEditingController();
   final description = TextEditingController();
+  final validFromCtr = TextEditingController();
+  final validToCtr = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+  DateTime _selectedFromDate = DateTime.now();
+  DateTime _selectedToDate = DateTime.now();
+
+  Future<void> _selectFromDate(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: _selectedFromDate,
+      firstDate: DateTime(2000),
+      lastDate: DateTime(2101),
+    );
+    if (picked != null && picked != _selectedFromDate) {
+      setState(() {
+        _selectedFromDate = picked;
+        validFromCtr.text = DateFormat.yMd().format(picked);
+      });
+    }
+  }
+
+  Future<void> _selectToDate(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: _selectedToDate,
+      firstDate: DateTime(2000),
+      lastDate: DateTime(2101),
+    );
+    if (picked != null && picked != _selectedToDate) {
+      setState(() {
+        _selectedToDate = picked;
+        validToCtr.text = DateFormat.yMd().format(picked);
+      });
+    }
+  }
+
   XFile? pickedFile;
   bool isAvailable = false;
 
@@ -80,22 +117,36 @@ class _CreateBannerDialogState extends ConsumerState<CreateBannerDialog> {
                 padding48,
                 widget.istext == true
                     ? Container()
-                    : UploadVideoWidget(
-                        title: widget.isImage == true
-                            ? 'Upload image'
-                            : 'Upload Video',
-                        isThumbnail: true,
-                        onVideoSelected: (image) {
-                          setState(() {
-                            pickedFile = image;
-                          });
-                        },
-                      ),
+                    : widget.isImage == true
+                        ? PromotionUploadImageWidget(
+                            isThumbnail: true,
+                            onImageSelected: (image) {
+                              setState(() {
+                                pickedFile = image;
+                              });
+                            },
+                            title: 'Upload image',
+                          )
+                        : UploadVideoWidget(
+                            title: 'Upload Video',
+                            isThumbnail: true,
+                            onVideoSelected: (image) {
+                              setState(() {
+                                pickedFile = image;
+                              });
+                            },
+                          ),
                 padding12,
                 widget.istext == true
                     ? Column(
                         children: [
                           CustomTextField(
+                            validatorFn: (p0) {
+                              if (p0!.isEmpty) {
+                                return 'Please enter title';
+                              }
+                              return null;
+                            },
                             fillColor: context.whiteColor,
                             verticalPadding: 10,
                             controller: titleCtr,
@@ -103,19 +154,74 @@ class _CreateBannerDialogState extends ConsumerState<CreateBannerDialog> {
                             label: 'Title',
                           ),
                           CustomTextField(
+                            validatorFn: (p0) {
+                              if (p0!.isEmpty) {
+                                return 'Please enter value';
+                              }
+                              return null;
+                            },
                             fillColor: context.whiteColor,
                             verticalPadding: 10,
-                            controller: titleCtr,
+                            controller: ofTextCtr,
                             hintText: 'Enter value',
                             label: '% OFF Text',
                           ),
                           CustomTextField(
+                            validatorFn: (p0) {
+                              if (p0!.isEmpty) {
+                                return 'Please enter description';
+                              }
+                              return null;
+                            },
                             fillColor: context.whiteColor,
                             verticalPadding: 10,
-                            controller: titleCtr,
+                            controller: description,
                             maxLines: 4,
                             hintText: 'Add some description',
                             label: 'Description',
+                          ),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: CustomTextField(
+                                  validatorFn: (p0) {
+                                    if (p0!.isEmpty) {
+                                      return 'Please enter Valid From';
+                                    }
+                                    return null;
+                                  },
+                                  onTap: () {
+                                    _selectFromDate(context);
+                                  },
+                                  enabled: false,
+                                  fillColor: context.whiteColor,
+                                  verticalPadding: 10,
+                                  controller: validFromCtr,
+                                  hintText: 'Select Date',
+                                  label: 'Valid From',
+                                  tailingIconPath: AppAssets.calendarSvgIcon,
+                                ),
+                              ),
+                              padding12,
+                              Expanded(
+                                child: CustomTextField(
+                                  validatorFn: (p0) {
+                                    if (p0!.isEmpty) {
+                                      return 'Please enter Valid To';
+                                    }
+                                    return null;
+                                  },
+                                  onTap: () => _selectToDate(context),
+                                  enabled: false,
+                                  fillColor: context.whiteColor,
+                                  verticalPadding: 10,
+                                  controller: validToCtr,
+                                  hintText: 'Select Date',
+                                  label: 'Valid To',
+                                  tailingIconPath: AppAssets.calendarSvgIcon,
+                                ),
+                              ),
+                            ],
                           ),
                         ],
                       )
@@ -126,7 +232,7 @@ class _CreateBannerDialogState extends ConsumerState<CreateBannerDialog> {
                   children: [
                     CustomButton(
                       onPressed: () {
-                         Navigator.pop(context);
+                        Navigator.pop(context);
                       },
                       buttonText: 'Cancel',
                       buttonHeight: 48,
@@ -138,12 +244,23 @@ class _CreateBannerDialogState extends ConsumerState<CreateBannerDialog> {
                     ),
                     padding12,
                     CustomButton(
-                      onPressed: () {
-                        discountcontroller
-                            .createPromotion({
-                              "name":"Promotion",
-                            }, File(pickedFile!.path));
-                        Navigator.pop(context);
+                      onPressed: () async {
+                        if (_formKey.currentState!.validate()) {
+                          await discountcontroller.createTextPromotion({
+                            "name": titleCtr.text,
+                            "description": description.text,
+                            "discount_percent": double.parse(ofTextCtr.text),
+                            "start_date": _selectedFromDate,
+                            "end_date": _selectedToDate,
+                        
+                          });
+                          Navigator.pop(context);
+                        }
+                        if (pickedFile != null) {
+                          discountcontroller
+                              .handlePromotionCreation(File(pickedFile!.path));
+                          Navigator.pop(context);
+                        }
                       },
                       buttonText: 'Save',
                       buttonHeight: 48,

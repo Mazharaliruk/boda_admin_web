@@ -70,7 +70,7 @@ class PromotionRepository {
     }
   }
 
-  Future<void> createPromotion(Map<String, dynamic> data,
+  Future<void> createPromotion(Map<String, dynamic> data, String fieldName,
       [File? imageFile]) async {
     const String url = ApiUrls.promotion; // Endpoint for creating a promotion
 
@@ -90,7 +90,7 @@ class PromotionRepository {
       if (imageFile != null) {
         request.files.add(
           await http.MultipartFile.fromPath(
-            'video_url', // Match the Django model field name
+            fieldName, // Match the Django model field name
             imageFile.path,
           ),
         );
@@ -126,6 +126,52 @@ class PromotionRepository {
         default:
           throw UnknownException(
               'Unknown Error: Save failed with status code ${response.statusCode}.');
+      }
+    } on http.ClientException catch (e) {
+      throw NetworkException('Network Error: $e');
+    } on FormatException catch (e) {
+      throw CommonException('Data Format Error: $e');
+    } catch (e) {
+      throw UnknownException('An unexpected error occurred: $e');
+    }
+  }
+
+  Future<void> createTextPromotion(Map<String, dynamic> data) async {
+    const String url = ApiUrls.promotion;
+
+    // Convert DateTime values to strings
+    data = data.map((key, value) {
+      if (value is DateTime) {
+        return MapEntry(key,
+            value.toIso8601String()); // Convert DateTime to ISO 8601 string
+      }
+      return MapEntry(key, value);
+    });
+
+    try {
+      final response = await http.post(
+        Uri.parse(url),
+        headers: await getHeaders(),
+        body: json.encode(data),
+      );
+
+      switch (response.statusCode) {
+        case 200: // Success
+        case 201: // Resource created successfully
+          print('Promotion created successfully!');
+          break;
+        case 400:
+          throw BadRequestException(
+              'Bad Request: Invalid parameters provided.');
+        case 401:
+          throw UnauthorizedException(
+              'Unauthorized: Invalid or missing token.');
+        case 404:
+          throw NotFoundException(
+              'Not Found: The requested resource was not found.');
+        default:
+          throw UnknownException(
+              'Unknown Error: Failed with status code ${response.statusCode}.');
       }
     } on http.ClientException catch (e) {
       throw NetworkException('Network Error: $e');

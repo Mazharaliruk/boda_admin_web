@@ -14,7 +14,8 @@ class CreateDiscountDialog extends ConsumerStatefulWidget {
   final bool isEdit;
 
   @override
-  ConsumerState<CreateDiscountDialog> createState() => _CreateDiscountDialogState();
+  ConsumerState<CreateDiscountDialog> createState() =>
+      _CreateDiscountDialogState();
 }
 
 class _CreateDiscountDialogState extends ConsumerState<CreateDiscountDialog> {
@@ -22,6 +23,7 @@ class _CreateDiscountDialogState extends ConsumerState<CreateDiscountDialog> {
   final disInPercentageCtr = TextEditingController();
   final validFromCtr = TextEditingController();
   final validToCtr = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
 
   DateTime _selectedFromDate = DateTime.now();
   DateTime _selectedToDate = DateTime.now();
@@ -67,113 +69,147 @@ class _CreateDiscountDialogState extends ConsumerState<CreateDiscountDialog> {
           color: context.whiteColor, borderRadius: BorderRadius.circular(24.r)),
       child: Scaffold(
         backgroundColor: context.whiteColor,
-        body: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                InkWell(
-                  // ignore: deprecated_member_use
-                  overlayColor: MaterialStateProperty.all(Colors.transparent),
-                  onTap: () {
-                    Navigator.pop(context);
-                  },
-                  child: Container(
-                    height: 44.h,
-                    width: 44.h,
-                    decoration: BoxDecoration(
-                        color: context.lightGreyColor.withOpacity(0.3),
-                        borderRadius: BorderRadius.circular(12.r)),
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: SvgPicture.asset(AppAssets.closeSvgIcon),
+        body: Form(
+          key: _formKey,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  InkWell(
+                    // ignore: deprecated_member_use
+                    overlayColor: MaterialStateProperty.all(Colors.transparent),
+                    onTap: () {
+                      Navigator.pop(context);
+                    },
+                    child: Container(
+                      height: 44.h,
+                      width: 44.h,
+                      decoration: BoxDecoration(
+                          color: context.lightGreyColor.withOpacity(0.3),
+                          borderRadius: BorderRadius.circular(12.r)),
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: SvgPicture.asset(AppAssets.closeSvgIcon),
+                      ),
+                    ),
+                  )
+                ],
+              ),
+              Text(
+                widget.isEdit ? "Edit Discount" : 'Create Discount',
+                style: getBoldStyle(
+                    color: context.blackColor, fontSize: MyFonts.size22),
+              ),
+              CustomTextField(
+                validatorFn: (value) {
+                  if (value!.isEmpty) {
+                    return 'Please enter discount title';
+                  }
+                  return null;
+                },
+                fillColor: context.whiteColor,
+                verticalPadding: 10,
+                controller: disTitleCtr,
+                hintText: 'Enter Discount Title',
+                label: 'Title',
+              ),
+              CustomTextField(
+                validatorFn: (value) {
+                  if (value!.isEmpty) {
+                    return 'Please enter discount in percentage';
+                  }
+                  return null;
+                },
+                fillColor: context.whiteColor,
+                verticalPadding: 10,
+                controller: disInPercentageCtr,
+                hintText: 'Enter Discount in percentage',
+                label: 'Discount in (%)',
+              ),
+              Row(
+                children: [
+                  Expanded(
+                    child: CustomTextField(
+                      onTap: () {
+                        _selectFromDate(context);
+                      },
+                      validatorFn: (p0) {
+                        if (p0!.isEmpty) {
+                          return 'Please select valid from date';
+                        }
+                        return null;
+                      },
+                      enabled: false,
+                      fillColor: context.whiteColor,
+                      verticalPadding: 10,
+                      controller: validFromCtr,
+                      hintText: 'Select Date',
+                      label: 'Valid From',
+                      tailingIconPath: AppAssets.calendarSvgIcon,
                     ),
                   ),
-                )
-              ],
-            ),
-            Text(
-              widget.isEdit ? "Edit Discount" : 'Create Discount',
-              style: getBoldStyle(
-                  color: context.blackColor, fontSize: MyFonts.size22),
-            ),
-            CustomTextField(
-              fillColor: context.whiteColor,
-              verticalPadding: 10,
-              controller: disTitleCtr,
-              hintText: 'Enter Discount Title',
-              label: 'Title',
-            ),
-            CustomTextField(
-              fillColor: context.whiteColor,
-              verticalPadding: 10,
-              controller: disInPercentageCtr,
-              hintText: 'Enter Discount in percentage',
-              label: 'Discount in (%)',
-            ),
-            Row(
-              children: [
-                Expanded(
-                  child: CustomTextField(
-                    onTap: () {
-                      _selectFromDate(context);
-                    },
-                    enabled: false,
-                    fillColor: context.whiteColor,
-                    verticalPadding: 10,
-                    controller: validFromCtr,
-                    hintText: 'Select Date',
-                    label: 'Valid From',
-                    tailingIconPath: AppAssets.calendarSvgIcon,
+                  padding12,
+                  Expanded(
+                    child: CustomTextField(
+                      onTap: () => _selectToDate(context),
+                      enabled: false,
+                      fillColor: context.whiteColor,
+                      verticalPadding: 10,
+                      validatorFn: (p0) {
+                        if (p0!.isEmpty) {
+                          return 'Please select valid to date';
+                        }
+                        return null;
+                      },
+                      controller: validToCtr,
+                      hintText: 'Select Date',
+                      label: 'Valid To',
+                      tailingIconPath: AppAssets.calendarSvgIcon,
+                    ),
                   ),
-                ),
-                padding12,
-                Expanded(
-                  child: CustomTextField(
-                    onTap: () => _selectToDate(context),
-                    enabled: false,
-                    fillColor: context.whiteColor,
-                    verticalPadding: 10,
-                    controller: validToCtr,
-                    hintText: 'Select Date',
-                    label: 'Valid To',
-                    tailingIconPath: AppAssets.calendarSvgIcon,
-                  ),
-                ),
-              ],
-            ),
-            padding40,
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                CustomButton(
-                  onPressed: () {},
-                  buttonText: 'Cancel',
-                  buttonHeight: 48,
-                  buttonWidth: 141,
-                  borderRadius: 14.r,
-                  backColor: context.whiteColor,
-                  borderColor: context.secondary,
-                  textColor: context.secondary,
-                ),
-                padding12,
-                CustomButton(
-                  onPressed: () {
-                       discountController.saveDiscount({
-                      
-                      
-                      });
+                ],
+              ),
+              padding40,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  CustomButton(
+                    onPressed: () {
                       Navigator.pop(context);
-                  },
-                  buttonText: 'Create',
-                  buttonHeight: 48,
-                  buttonWidth: 141,
-                  borderRadius: 14.r,
-                ),
-              ],
-            )
-          ],
+                    },
+                    buttonText: 'Cancel',
+                    buttonHeight: 48,
+                    buttonWidth: 141,
+                    borderRadius: 14.r,
+                    backColor: context.whiteColor,
+                    borderColor: context.secondary,
+                    textColor: context.secondary,
+                  ),
+                  padding12,
+                  CustomButton(
+                    onPressed: () {
+                      if (_formKey.currentState!.validate()) {
+                        discountController.saveDiscount({
+                          "name": disTitleCtr.text,
+                          "discount_percent": disInPercentageCtr.text,
+                          "start_date": _selectedFromDate.toIso8601String(),
+                          "end_date": _selectedToDate.toIso8601String(),
+                            
+                        });
+                        Navigator.pop(context);
+                      }
+                    },
+                    buttonText: 'Create',
+                    buttonHeight: 48,
+                    buttonWidth: 141,
+                    borderRadius: 14.r,
+                  ),
+                ],
+              )
+            ],
+          ),
         ),
       ),
     );

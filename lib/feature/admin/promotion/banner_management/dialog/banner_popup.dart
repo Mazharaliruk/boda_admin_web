@@ -3,6 +3,8 @@ import 'package:admin_boda/commons/common_imports/common_libs.dart';
 import 'package:admin_boda/commons/common_widgets/show_dialog.dart';
 import 'package:admin_boda/feature/admin/promotion/banner_management/dialog/create_banner_dialog.dart';
 
+import 'upload_image_widget.dart';
+
 class BannerPopup extends ConsumerStatefulWidget {
   const BannerPopup({super.key});
 
@@ -28,7 +30,9 @@ class _SServiceSettingDialogState extends ConsumerState<BannerPopup> {
                       if (e == 'Image Banner') {
                         showCustomDialog(
                             context: context,
-                            content: const CreateBannerDialog(isImage: true));
+                            content:  CreateBannerDialog(
+                            isImage: true,
+                          ));
                       } else if (e == 'Video Banner') {
                         showCustomDialog(
                             context: context,
