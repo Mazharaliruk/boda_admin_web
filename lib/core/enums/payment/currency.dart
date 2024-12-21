@@ -1,0 +1,27 @@
+// ignore_for_file: constant_identifier_names
+
+enum Currency {
+  INR,
+  USD,
+  EUR,
+  GBP,
+  AUD,
+  CAD,
+  JPY,
+  RUB,
+  KRW,
+  CHF,
+  BRL,
+  CNY,
+  HKD,
+  MXN,
+  NZD,
+  PHP,
+  SGD,
+  THB,
+  TRY,
+  VND,
+  ZAR,
+  PKR,
+  AED,
+}
