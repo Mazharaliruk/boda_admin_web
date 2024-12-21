@@ -4,17 +4,17 @@ import 'dart:convert';
 import 'package:http/http.dart'as http;
 
 import '../../../core/constants/api_urls.dart';
-import '../../../models/account/user_profile_model.dart';
+import '../../../models/account/vendor_profile_model.dart';
 import '../../../utils/exceptions/common_exception.dart';
 import '../inventry/category_repository.dart';
 
-class UserRepository {
+class VendorRepository {
 
 
   
 // Method to fetch categories
-Future<List<UserProfileModel>> fetchUserList() async {
-  const String url = ApiUrls.userList;
+Future<List<VendorProfileModel>> fetchVendorList() async {
+  const String url = ApiUrls.vendorList;
 
   try {
     final response = await http.get(Uri.parse(url), headers:await getHeaders());
@@ -26,10 +26,10 @@ Future<List<UserProfileModel>> fetchUserList() async {
         final data = json.decode(response.body);
         if (data is List) {
           // Ensure all elements in the list are properly typed
-          return data.map<UserProfileModel>((item) {
+          return data.map<VendorProfileModel>((item) {
             if (item is Map<String, dynamic>) {
               print(item);
-              return UserProfileModel.fromMap(item);
+              return VendorProfileModel.fromMap(item);
             } else {
               throw FormatException("Unexpected data format: $item");
             }

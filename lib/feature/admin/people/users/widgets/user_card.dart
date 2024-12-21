@@ -1,12 +1,18 @@
+// ignore_for_file: must_be_immutable
+
 import 'package:admin_boda/commons/common_functions/padding.dart';
 import 'package:admin_boda/commons/common_imports/common_libs.dart';
 import 'package:admin_boda/commons/common_widgets/show_dialog.dart';
 import 'package:admin_boda/feature/admin/people/vendors/dialog/delete_user_dialog.dart';
 import 'package:admin_boda/utils/constants/assets_manager.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:intl/intl.dart';
+
+import '../../../../../models/account/user_profile_model.dart';
 
 class UserCard extends StatelessWidget {
-  const UserCard({super.key});
+  UserCard({super.key, required this.userProfileModel});
+  UserProfileModel userProfileModel;
 
   @override
   Widget build(BuildContext context) {
@@ -30,11 +36,11 @@ class UserCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text('James Anderson',
+                  Text(userProfileModel.name,
                       style: getBoldStyle(
                           color: context.blackColor, fontSize: MyFonts.size16)),
                   Text(
-                    'james@gmail.com',
+                    userProfileModel.email,
                     style: getRegularStyle(
                         color: context.lightTextColor,
                         fontSize: MyFonts.size13),
@@ -51,7 +57,7 @@ class UserCard extends StatelessWidget {
                   textAlign: TextAlign.center,
                   style: getRegularStyle(
                       color: context.lightTextColor, fontSize: MyFonts.size14)),
-              Text('+1 696 6665',
+              Text("+${userProfileModel.phone}",
                   textAlign: TextAlign.center,
                   style: getRegularStyle(
                       color: context.blackColor, fontSize: MyFonts.size16)),
@@ -65,10 +71,15 @@ class UserCard extends StatelessWidget {
                   textAlign: TextAlign.center,
                   style: getRegularStyle(
                       color: context.lightTextColor, fontSize: MyFonts.size14)),
-              Text('Apr 12, 1995',
-                  textAlign: TextAlign.center,
-                  style: getRegularStyle(
-                      color: context.blackColor, fontSize: MyFonts.size16)),
+              Text(
+                DateFormat('dd-MM-yyyy').format(
+                    DateTime.parse(userProfileModel.date_of_birth.toString())),
+                textAlign: TextAlign.center,
+                style: getRegularStyle(
+                  color: context.blackColor,
+                  fontSize: MyFonts.size16,
+                ),
+              ),
             ],
           ),
           InkWell(

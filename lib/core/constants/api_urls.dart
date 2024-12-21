@@ -26,6 +26,9 @@ class ApiUrls {
   static const String register = "${baseUrl}api/user/register/";
   static const String logout = "${baseUrl}api/user/logout/";
   static const String profile = "${baseUrl}api/user/profile/";
+  static const String userList = "${baseUrl}api/user/list/";
+  static const String vendorList = "${baseUrl}api/vendor/list/";
+
 
   // Inventry endpoints
   static const String inventry = "${baseUrl}inventry/v1/";
