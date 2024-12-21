@@ -59,10 +59,5 @@ class ApiUrls {
   static const String chatroom = "${core}chatrooms/";
   static const String messages = "${core}messages/";
 
-  // Sales endpoints
-  static const String sale = "${baseUrl}sales/v1/";
-  static const String saleOrder = "${sale}orders/";
-  static const String saleTransaction = "${sale}transactions/";
-  static const String salePayment = "${sale}payments/";
-  static const String salePaymentGetway = "${sale}paymentgetways/";
+
 }
