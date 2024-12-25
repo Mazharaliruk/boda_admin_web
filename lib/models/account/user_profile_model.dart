@@ -4,6 +4,7 @@ import 'dart:convert';
 // ignore_for_file: non_constant_identifier_names
 
 class UserProfileModel {
+  int id;
   int user;
   String? profile_picture;
   String? address;
@@ -17,6 +18,7 @@ class UserProfileModel {
   DateTime updated_at;
   bool is_active;
   UserProfileModel({
+    required this.id,
     required this.user,
     this.profile_picture,
     this.address,
@@ -32,6 +34,7 @@ class UserProfileModel {
   });
 
   UserProfileModel copyWith({
+    int? id,
     int? user,
     String? profile_picture,
     String? address,
@@ -46,6 +49,7 @@ class UserProfileModel {
     bool? is_active,
   }) {
     return UserProfileModel(
+      id: id ?? this.id,
       user: user ?? this.user,
       profile_picture: profile_picture ?? this.profile_picture,
       address: address ?? this.address,
@@ -63,6 +67,7 @@ class UserProfileModel {
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
+      'id': id,
       'user': user,
       'profile_picture': profile_picture,
       'address': address,
@@ -80,6 +85,7 @@ class UserProfileModel {
 
   factory UserProfileModel.fromMap(Map<String, dynamic> map) {
     return UserProfileModel(
+      id: map['id'] as int,
       user: map['user'] as int,
       profile_picture: map['profile_picture'] != null ? map['profile_picture'] as String : null,
       address: map['address'] != null ? map['address'] as String : null,
@@ -101,7 +107,7 @@ class UserProfileModel {
 
   @override
   String toString() {
-    return 'UserProfileModel(user: $user, profile_picture: $profile_picture, address: $address, name: $name, email: $email, phone: $phone, date_of_birth: $date_of_birth, role: $role, last_login: $last_login, created_at: $created_at, updated_at: $updated_at, is_active: $is_active)';
+    return 'UserProfileModel(id: $id, user: $user, profile_picture: $profile_picture, address: $address, name: $name, email: $email, phone: $phone, date_of_birth: $date_of_birth, role: $role, last_login: $last_login, created_at: $created_at, updated_at: $updated_at, is_active: $is_active)';
   }
 
   @override
@@ -109,6 +115,7 @@ class UserProfileModel {
     if (identical(this, other)) return true;
   
     return 
+      other.id == id &&
       other.user == user &&
       other.profile_picture == profile_picture &&
       other.address == address &&
@@ -125,7 +132,8 @@ class UserProfileModel {
 
   @override
   int get hashCode {
-    return user.hashCode ^
+    return id.hashCode ^
+      user.hashCode ^
       profile_picture.hashCode ^
       address.hashCode ^
       name.hashCode ^

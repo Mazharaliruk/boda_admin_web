@@ -1,12 +1,13 @@
 import 'package:admin_boda/commons/common_functions/padding.dart';
 import 'package:admin_boda/commons/common_imports/apis_commons.dart';
 import 'package:admin_boda/commons/common_imports/common_libs.dart';
-import 'package:admin_boda/commons/common_widgets/cached_circular_network_image.dart';
 import 'package:admin_boda/commons/common_widgets/custom_text_fields.dart';
 import 'package:admin_boda/commons/common_widgets/show_dialog.dart';
 import 'package:admin_boda/feature/admin/activities/booking_management/dialog/booking_detail_dialog.dart';
 import 'package:admin_boda/utils/constants/assets_manager.dart';
+import 'package:intl/intl.dart';
 
+import '../../../../../models/account/user_profile_model.dart';
 import '../../../../../models/sales/order_model.dart';
 import '../controllers/booking_controller.dart';
 
@@ -130,20 +131,32 @@ class _BookingBodyState extends ConsumerState<BookingBody> {
                                 children: [
                                   // const CachedCircularNetworkImageWidget(
                                   //     image: AppAssets.userImage, size: 35),
-                                  Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Text('James Anderson',
-                                          style: getSemiBoldStyle(
-                                              color: context.blackColor,
-                                              fontSize: MyFonts.size10)),
-                                      Text(
-                                        'james@gmail.com',
-                                        style: getRegularStyle(
-                                            color: context.lightTextColor,
-                                            fontSize: MyFonts.size8),
-                                      )
-                                    ],
+                                  FutureBuilder<UserProfileModel>(
+                                    future: bookingController.fetchUser(order.customer_id),
+                                    builder: (context, userSnap) {
+                                      if(userSnap.connectionState == ConnectionState.waiting) {
+                                        return const Center(child: CircularProgressIndicator());
+                                      }else if(userSnap.hasError) {
+                                        return Center(child: Text(userSnap.error.toString()));
+                                      }else if(!userSnap.hasData) {
+                                        return const Center(child: Text("No data found"));
+                                      }
+                                      return Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text(userSnap.data!.name,
+                                              style: getSemiBoldStyle(
+                                                  color: context.blackColor,
+                                                  fontSize: MyFonts.size10)),
+                                          Text(
+                                            'james@gmail.com',
+                                            style: getRegularStyle(
+                                                color: context.lightTextColor,
+                                                fontSize: MyFonts.size8),
+                                          )
+                                        ],
+                                      );
+                                    }
                                   ),
                                 ],
                               ),
@@ -165,7 +178,7 @@ class _BookingBodyState extends ConsumerState<BookingBody> {
                             ),
                             SizedBox(
                               width: 135,
-                              child: Text('3/07/2024',
+                              child: Text(DateFormat('dd-MM-yyyy-hh:mm').format(order.created_at),
                                   textAlign: TextAlign.center,
                                   style: getBoldStyle(
                                       color: context.blackColor,
@@ -190,7 +203,7 @@ class _BookingBodyState extends ConsumerState<BookingBody> {
                               ),
                               child: Center(
                                 child: Text(
-                                  'Pending',
+                                  order.status.name,
                                   style: getBoldStyle(
                                       color: context.blackColor,
                                       fontSize: MyFonts.size8),
