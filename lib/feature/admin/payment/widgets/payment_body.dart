@@ -4,6 +4,10 @@ import 'package:admin_boda/commons/common_imports/common_libs.dart';
 import 'package:admin_boda/commons/common_widgets/cached_circular_network_image.dart';
 import 'package:admin_boda/commons/common_widgets/custom_text_fields.dart';
 import 'package:admin_boda/utils/constants/assets_manager.dart';
+import 'package:intl/intl.dart';
+
+import '../../../../models/sales/transaction_model.dart';
+import '../controller/payment_controller.dart';
 
 class PaymentBody extends ConsumerStatefulWidget {
   const PaymentBody({super.key});
@@ -23,6 +27,7 @@ class _PaymentBodyState extends ConsumerState<PaymentBody> {
 
   @override
   Widget build(BuildContext context) {
+    final paymnetController = ref.watch(paymentProvider);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -94,108 +99,123 @@ class _PaymentBodyState extends ConsumerState<PaymentBody> {
           ),
         ),
         Expanded(
-          child: ListView.builder(
-              itemCount: 20,
-              shrinkWrap: true,
-              physics: const BouncingScrollPhysics(),
-              padding: const EdgeInsets.only(top: 20, bottom: 100),
-              itemBuilder: (context, index) {
-                return InkWell(
-                  onTap: () {},
-                  child: Column(
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+          child: FutureBuilder<List<TransactionModel>>(
+            future: paymnetController.fetchTransaction(),
+            builder: (context, snapshot) {
+
+              if(snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(child: CircularProgressIndicator(),);
+              }else if(snapshot.hasError) {
+                return Center(child: Text(snapshot.error.toString()),);
+              }
+              else if(!snapshot.hasData) {
+                return const Center(child: Text("No data found"),);
+              }
+              return ListView.builder(
+                  itemCount: snapshot.data!.length,
+                  shrinkWrap: true,
+                  physics: const BouncingScrollPhysics(),
+                  padding: const EdgeInsets.only(top: 20, bottom: 100),
+                  itemBuilder: (context, index) {
+                    final transactionData = snapshot.data![index];
+                    return InkWell(
+                      onTap: () {},
+                      child: Column(
                         children: [
-                          SizedBox(
-                            width: 140,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                const CachedCircularNetworkImageWidget(
-                                    image: AppAssets.userImage, size: 35),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: [
+                              SizedBox(
+                                width: 140,
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
-                                    Text('James Anderson',
-                                        style: getSemiBoldStyle(
-                                            color: context.blackColor,
-                                            fontSize: MyFonts.size10)),
-                                    Text(
-                                      'james@gmail.com',
-                                      style: getRegularStyle(
-                                          color: context.lightTextColor,
-                                          fontSize: MyFonts.size8),
-                                    )
+                                    const CachedCircularNetworkImageWidget(
+                                        image: AppAssets.userImage, size: 35),
+                                    Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text('James Anderson',
+                                            style: getSemiBoldStyle(
+                                                color: context.blackColor,
+                                                fontSize: MyFonts.size10)),
+                                        Text(
+                                          'james@gmail.com',
+                                          style: getRegularStyle(
+                                              color: context.lightTextColor,
+                                              fontSize: MyFonts.size8),
+                                        )
+                                      ],
+                                    ),
                                   ],
                                 ),
-                              ],
-                            ),
-                          ),
-                          SizedBox(
-                            width: 140,
-                            child: Text('c53f319a-50dc-44e5-9df7',
-                                textAlign: TextAlign.center,
-                                style: getBoldStyle(
-                                    color: context.blackColor,
-                                    fontSize: MyFonts.size8)),
-                          ),
-                          SizedBox(
-                            width: 140,
-                            child: Text('c53f319a-50dc-44e5-9df7',
-                                textAlign: TextAlign.center,
-                                style: getBoldStyle(
-                                    color: context.blackColor,
-                                    fontSize: MyFonts.size8)),
-                          ),
-                          SizedBox(
-                            width: 140,
-                            child: Text('16/05/2024 03:00:37 PM',
-                                textAlign: TextAlign.center,
-                                style: getBoldStyle(
-                                    color: context.blackColor,
-                                    fontSize: MyFonts.size8)),
-                          ),
-                          SizedBox(
-                            width: 140,
-                            child: Text('15   ',
-                                textAlign: TextAlign.center,
-                                style: getBoldStyle(
-                                    color: context.blackColor,
-                                    fontSize: MyFonts.size8)),
-                          ),
-                          SizedBox(
-                            width: 140,
-                            child: Text.rich(
-                              textAlign: TextAlign.center,
-                              TextSpan(
-                                text: '3589*** *** *** 2300',
-                                style: getBoldStyle(
-                                    color: context.blackColor,
-                                    fontSize: MyFonts.size8),
                               ),
-                            ),
+                              SizedBox(
+                                width: 140,
+                                child: Text('c53f319a-50dc-44e5-9df7',
+                                    textAlign: TextAlign.center,
+                                    style: getBoldStyle(
+                                        color: context.blackColor,
+                                        fontSize: MyFonts.size8)),
+                              ),
+                              SizedBox(
+                                width: 140,
+                                child: Text(transactionData.transaction_id,
+                                    textAlign: TextAlign.center,
+                                    style: getBoldStyle(
+                                        color: context.blackColor,
+                                        fontSize: MyFonts.size8)),
+                              ),
+                              SizedBox(
+                                width: 140,
+                                child: Text(DateFormat('dd-MM-yyyy-hh:mm').format(transactionData.created_at),
+                                    textAlign: TextAlign.center,
+                                    style: getBoldStyle(
+                                        color: context.blackColor,
+                                        fontSize: MyFonts.size8)),
+                              ),
+                              SizedBox(
+                                width: 140,
+                                child: Text('15   ',
+                                    textAlign: TextAlign.center,
+                                    style: getBoldStyle(
+                                        color: context.blackColor,
+                                        fontSize: MyFonts.size8)),
+                              ),
+                              SizedBox(
+                                width: 140,
+                                child: Text.rich(
+                                  textAlign: TextAlign.center,
+                                  TextSpan(
+                                    text: '3589*** *** *** 2300',
+                                    style: getBoldStyle(
+                                        color: context.blackColor,
+                                        fontSize: MyFonts.size8),
+                                  ),
+                                ),
+                              ),
+                              SizedBox(
+                                width: 140,
+                                child: Text(transactionData.status.name,
+                                    textAlign: TextAlign.center,
+                                    style: getBoldStyle(
+                                        color: context.blackColor,
+                                        fontSize: MyFonts.size8)),
+                              ),
+                            ],
                           ),
-                          SizedBox(
-                            width: 140,
-                            child: Text('Paid',
-                                textAlign: TextAlign.center,
-                                style: getBoldStyle(
-                                    color: context.blackColor,
-                                    fontSize: MyFonts.size8)),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 8),
+                            child: Divider(
+                              color: context.lightGreyColor,
+                            ),
                           ),
                         ],
                       ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 8),
-                        child: Divider(
-                          color: context.lightGreyColor,
-                        ),
-                      ),
-                    ],
-                  ),
-                );
-              }),
+                    );
+                  });
+            }
+          ),
         )
       ],
     );

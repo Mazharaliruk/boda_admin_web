@@ -2,11 +2,9 @@
 // ignore_for_file: non_constant_identifier_names
 
 import 'dart:convert';
-
-import 'package:admin_boda/core/enums/payment/order_status.dart';
-
 import '../../core/enums/payment/currency.dart';
 import '../../core/enums/payment/payment_method.dart';
+import '../../core/enums/payment/payment_status.dart';
 
 class PaymentModel {
   int id;
@@ -15,7 +13,7 @@ class PaymentModel {
   double amount;
   DateTime? payment_data;
   Currency currency;
-  OrderStatus status;
+  PaymentStatus status;
   int order;
   int payment_getway;
   int transaction;
@@ -46,7 +44,7 @@ class PaymentModel {
     double? amount,
     DateTime? payment_data,
     Currency? currency,
-    OrderStatus? status,
+    PaymentStatus? status,
     int? order,
     int? payment_getway,
     int? transaction,
