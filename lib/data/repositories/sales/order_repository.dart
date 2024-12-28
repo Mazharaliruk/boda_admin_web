@@ -25,7 +25,6 @@ Future<List<OrderModel>> fetchOrders() async {
           // Ensure all elements in the list are properly typed
           return data.map<OrderModel>((item) {
             if (item is Map<String, dynamic>) {
-              print(item);
               return OrderModel.fromMap(item);
             } else {
               throw FormatException("Unexpected data format: $item");
