@@ -184,7 +184,8 @@ class _BookingBodyState extends ConsumerState<BookingBody> {
                                           ConnectionState.waiting) {
                                         return const Center(
                                             child: CircularProgressIndicator());
-                                      } else if (eventSnap.hasError) {
+                                      }
+                                       else if (eventSnap.hasError) {
                                         print(eventSnap.error);
                                         return Center(
                                           child: Text(
@@ -193,7 +194,8 @@ class _BookingBodyState extends ConsumerState<BookingBody> {
                                                 color: Colors.red),
                                           ),
                                         );
-                                      } else if (!eventSnap.hasData) {
+                                      } 
+                                      else if (!eventSnap.hasData) {
                                         return const Center(
                                           child: Text(
                                             "N/A",

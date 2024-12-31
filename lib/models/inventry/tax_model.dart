@@ -13,6 +13,7 @@ class TaxModel {
   double? tax_percent;
   DateTime? start_date;
   DateTime? end_date;
+  String? description;
   TaxModel({
     required this.id,
     required this.name,
@@ -23,6 +24,7 @@ class TaxModel {
     this.tax_percent,
     this.start_date,
     this.end_date,
+    this.description,
   });
 
 
@@ -36,6 +38,7 @@ class TaxModel {
     double? tax_percent,
     DateTime? start_date,
     DateTime? end_date,
+    String? description,
   }) {
     return TaxModel(
       id: id ?? this.id,
@@ -47,6 +50,7 @@ class TaxModel {
       tax_percent: tax_percent ?? this.tax_percent,
       start_date: start_date ?? this.start_date,
       end_date: end_date ?? this.end_date,
+      description: description ?? this.description,
     );
   }
 
@@ -61,6 +65,7 @@ class TaxModel {
       'tax_percent': tax_percent,
       'start_date': start_date?.millisecondsSinceEpoch,
       'end_date': end_date?.millisecondsSinceEpoch,
+      'description': description,
     };
   }
 
@@ -75,6 +80,7 @@ class TaxModel {
       tax_percent: map['tax_percent'] != null ? map['tax_percent'] as double : null,
       start_date: map['start_date'] != null ? DateTime.parse(map['start_date'] as String) : null,
       end_date: map['end_date'] != null ? DateTime.parse(map['end_date'] as String) : null,
+      description: map['description'] != null ? map['description'] as String : null,
     );
   }
 
@@ -84,7 +90,7 @@ class TaxModel {
 
   @override
   String toString() {
-    return 'TaxModel(id: $id, name: $name, created_at: $created_at, updated_at: $updated_at, service_id: $service_id, is_active: $is_active, tax_percent: $tax_percent, start_date: $start_date, end_date: $end_date)';
+    return 'TaxModel(id: $id, name: $name, created_at: $created_at, updated_at: $updated_at, service_id: $service_id, is_active: $is_active, tax_percent: $tax_percent, start_date: $start_date, end_date: $end_date, description: $description)';
   }
 
   @override
@@ -100,7 +106,8 @@ class TaxModel {
       other.is_active == is_active &&
       other.tax_percent == tax_percent &&
       other.start_date == start_date &&
-      other.end_date == end_date;
+      other.end_date == end_date &&
+      other.description == description;
   }
 
   @override
@@ -113,6 +120,7 @@ class TaxModel {
       is_active.hashCode ^
       tax_percent.hashCode ^
       start_date.hashCode ^
-      end_date.hashCode;
+      end_date.hashCode ^
+      description.hashCode;
   }
 }

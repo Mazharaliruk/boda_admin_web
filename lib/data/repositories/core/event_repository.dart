@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:admin_boda/models/core/event_model.dart';
 import 'package:http/http.dart' as http;
 import '../../../core/constants/api_urls.dart';
-import '../../../models/sales/order_model.dart';
 import '../../../utils/exceptions/common_exception.dart';
 import '../inventry/category_repository.dart';
 
@@ -77,7 +76,7 @@ Future<EventModel> fetchEventById(int id) async {
         // Parse and validate data
         final data = json.decode(response.body);
         if (data is Map<String, dynamic>) {
-              print(data);
+              print("kkkk$data");
 
           return EventModel.fromMap(data);
         } else {
@@ -106,6 +105,7 @@ Future<EventModel> fetchEventById(int id) async {
   } on FormatException catch (e) {
     throw CommonException('Data Format Error: $e');
   } catch (e) {
+    print("ddd$e");
     throw UnknownException('An unexpected error occurred: $e');
   }
 }

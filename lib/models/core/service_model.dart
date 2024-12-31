@@ -9,7 +9,6 @@ class ServiceModel {
   DateTime created_at;
   DateTime updated_at;
   int vendor;
-  int category;
   int business;
   bool is_active;
   double price;
@@ -21,7 +20,6 @@ class ServiceModel {
     required this.created_at,
     required this.updated_at,
     required this.vendor,
-    required this.category,
     required this.business,
     required this.is_active,
     required this.price,
@@ -48,7 +46,6 @@ class ServiceModel {
       created_at: created_at ?? this.created_at,
       updated_at: updated_at ?? this.updated_at,
       vendor: vendor ?? this.vendor,
-      category: category ?? this.category,
       business: business ?? this.business,
       is_active: is_active ?? this.is_active,
       price: price ?? this.price,
@@ -64,7 +61,6 @@ class ServiceModel {
       'created_at': created_at.millisecondsSinceEpoch,
       'updated_at': updated_at.millisecondsSinceEpoch,
       'vendor': vendor,
-      'category': category,
       'business': business,
       'is_active': is_active,
       'price': price,
@@ -80,7 +76,6 @@ class ServiceModel {
       created_at: DateTime.parse(map['created_at'] as String),
       updated_at: DateTime.parse(map['updated_at'] as String),
       vendor: map['vendor'] as int,
-      category: map['category'] as int,
       business: map['business'] as int,
       is_active: map['is_active'] as bool,
       price: map['price'] as double,
@@ -95,7 +90,7 @@ class ServiceModel {
 
   @override
   String toString() {
-    return 'ServiceModel(id: $id, name: $name, created_at: $created_at, updated_at: $updated_at, vendor: $vendor, category: $category, business: $business, is_active: $is_active, price: $price, currency: $currency, description: $description)';
+    return 'ServiceModel(id: $id, name: $name, created_at: $created_at, updated_at: $updated_at, vendor: $vendor, business: $business, is_active: $is_active, price: $price, currency: $currency, description: $description)';
   }
 
   @override
@@ -108,7 +103,6 @@ class ServiceModel {
       other.created_at == created_at &&
       other.updated_at == updated_at &&
       other.vendor == vendor &&
-      other.category == category &&
       other.business == business &&
       other.is_active == is_active &&
       other.price == price &&
@@ -123,7 +117,6 @@ class ServiceModel {
       created_at.hashCode ^
       updated_at.hashCode ^
       vendor.hashCode ^
-      category.hashCode ^
       business.hashCode ^
       is_active.hashCode ^
       price.hashCode ^

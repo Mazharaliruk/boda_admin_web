@@ -4,6 +4,10 @@ import 'package:admin_boda/commons/common_imports/common_libs.dart';
 import 'package:admin_boda/commons/common_widgets/custom_button.dart';
 import 'package:admin_boda/commons/common_widgets/show_dialog.dart';
 import 'package:admin_boda/feature/admin/setting/tax_charges/dialog/add_tax_charger_dialog.dart';
+import 'package:admin_boda/utils/loading.dart';
+
+import '../../../../../models/inventry/tax_model.dart';
+import '../controller/tax_controller.dart';
 
 class SettingBody extends ConsumerStatefulWidget {
   const SettingBody({super.key});
@@ -15,6 +19,7 @@ class SettingBody extends ConsumerStatefulWidget {
 class _SettingBodyState extends ConsumerState<SettingBody> {
   @override
   Widget build(BuildContext context) {
+    final taxController = ref.watch(taxProvider);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -84,117 +89,132 @@ class _SettingBodyState extends ConsumerState<SettingBody> {
           ),
         ),
         Expanded(
-          child: ListView.builder(
-              itemCount: 1,
-              shrinkWrap: true,
-              physics: const BouncingScrollPhysics(),
-              padding: const EdgeInsets.only(top: 20, bottom: 100),
-              itemBuilder: (context, index) {
-                return Column(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(left: 40, right: 30),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          SizedBox(
-                            width: 140,
-                            child: Text('Service Fee',
-                                textAlign: TextAlign.start,
-                                style: getBoldStyle(
-                                    color: context.blackColor,
-                                    fontSize: MyFonts.size8)),
-                          ),
-                          SizedBox(
-                            width: 140,
-                            child: Text('Percentage',
-                                textAlign: TextAlign.start,
-                                style: getBoldStyle(
-                                    color: context.blackColor,
-                                    fontSize: MyFonts.size8)),
-                          ),
-                          SizedBox(
-                            width: 140,
-                            child: Text('25%',
-                                textAlign: TextAlign.start,
-                                style: getBoldStyle(
-                                    color: context.blackColor,
-                                    fontSize: MyFonts.size8)),
-                          ),
-                          SizedBox(
-                            width: 140,
-                            child: Text('Activity Booking Charges',
-                                textAlign: TextAlign.start,
-                                style: getBoldStyle(
-                                    color: context.blackColor,
-                                    fontSize: MyFonts.size8)),
-                          ),
-                          Row(
+          child: FutureBuilder<List<TaxModel>>(
+            future: taxController.fetchTax(),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(child: LoadingWidget(),);
+              } else if (snapshot.hasError) {
+                return Center(child: Text(snapshot.error.toString()),);
+              } else if (!snapshot.hasData) {
+                return const Center(child: Text('No data found'),);
+              }
+              return ListView.builder(
+                  itemCount: snapshot.data!.length,
+                  shrinkWrap: true,
+                  physics: const BouncingScrollPhysics(),
+                  padding: const EdgeInsets.only(top: 20, bottom: 100),
+                  itemBuilder: (context, index) {
+                    final tax = snapshot.data![index];
+                    return Column(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(left: 40, right: 30),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              InkWell(
-                                overlayColor: MaterialStateProperty.all(
-                                    MyColors.transparentColor),
-                                onTap: () {
-                                  showCustomDialog(
-                                      context: context,
-                                      content: const AddTaxChargesDialog(
-                                          isEdit: true));
-                                },
-                                child: Container(
-                                  height: 20,
-                                  width: 55,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(2),
-                                    border: Border.all(
-                                        color: context.secondary, width: 1.5),
-                                  ),
-                                  child: Center(
-                                    child: Text(
-                                      'Manage',
-                                      style: getBoldStyle(
-                                          color: context.secondary,
-                                          fontSize: MyFonts.size8),
-                                    ),
-                                  ),
-                                ),
+                              SizedBox(
+                                width: 140,
+                                child: Text(tax.name,
+                                    textAlign: TextAlign.start,
+                                    style: getBoldStyle(
+                                        color: context.blackColor,
+                                        fontSize: MyFonts.size8)),
                               ),
-                              padding6,
-                              InkWell(
-                                overlayColor: MaterialStateProperty.all(
-                                    MyColors.transparentColor),
-                                onTap: () {},
-                                child: Container(
-                                  height: 20,
-                                  width: 55,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(2),
-                                    border: Border.all(
-                                        color: context.secondary, width: 1.5),
-                                  ),
-                                  child: Center(
-                                    child: Text(
-                                      'Delete',
-                                      style: getBoldStyle(
-                                          color: context.secondary,
-                                          fontSize: MyFonts.size8),
+                              SizedBox(
+                                width: 140,
+                                child: Text('Percentage',
+                                    textAlign: TextAlign.start,
+                                    style: getBoldStyle(
+                                        color: context.blackColor,
+                                        fontSize: MyFonts.size8)),
+                              ),
+                              SizedBox(
+                                width: 140,
+                                child: Text('${tax.tax_percent}%',
+                                    textAlign: TextAlign.start,
+                                    style: getBoldStyle(
+                                        color: context.blackColor,
+                                        fontSize: MyFonts.size8)),
+                              ),
+                              SizedBox(
+                                width: 140,
+                                child: Text('${tax.description}',
+                                    textAlign: TextAlign.start,
+                                    style: getBoldStyle(
+                                        color: context.blackColor,
+                                        fontSize: MyFonts.size8)),
+                              ),
+                              Row(
+                                children: [
+                                  InkWell(
+                                    overlayColor: MaterialStateProperty.all(
+                                        MyColors.transparentColor),
+                                    onTap: () {
+                                      showCustomDialog(
+                                          context: context,
+                                          content: const AddTaxChargesDialog(
+                                              isEdit: true));
+                                    },
+                                    child: Container(
+                                      height: 20,
+                                      width: 55,
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(2),
+                                        border: Border.all(
+                                            color: context.secondary, width: 1.5),
+                                      ),
+                                      child: Center(
+                                        child: Text(
+                                          'Manage',
+                                          style: getBoldStyle(
+                                              color: context.secondary,
+                                              fontSize: MyFonts.size8),
+                                        ),
+                                      ),
                                     ),
                                   ),
-                                ),
+                                  padding6,
+                                  InkWell(
+                                    overlayColor: MaterialStateProperty.all(
+                                        MyColors.transparentColor),
+                                    onTap: () {
+                                      taxController.deleteTax(tax.id);
+                                    },
+                                    child: Container(
+                                      height: 20,
+                                      width: 55,
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(2),
+                                        border: Border.all(
+                                            color: context.secondary, width: 1.5),
+                                      ),
+                                      child: Center(
+                                        child: Text(
+                                          'Delete',
+                                          style: getBoldStyle(
+                                              color: context.secondary,
+                                              fontSize: MyFonts.size8),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
                               ),
                             ],
                           ),
-                        ],
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 8),
-                      child: Divider(
-                        color: context.lightGreyColor,
-                      ),
-                    ),
-                  ],
-                );
-              }),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 8),
+                          child: Divider(
+                            color: context.lightGreyColor,
+                          ),
+                        ),
+                      ],
+                    );
+                  });
+            }
+          ),
         )
       ],
     );

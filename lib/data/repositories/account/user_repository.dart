@@ -67,7 +67,7 @@ class UserRepository {
   }
 
   Future<UserProfileModel> fetchUser(int id) async {
-    String url = "${ApiUrls.user}/$id/";
+    String url = "${ApiUrls.customer}/$id/";
 
     try {
       final response =
@@ -80,6 +80,7 @@ class UserRepository {
           final data = json.decode(response.body);
 
           if (data is Map<String, dynamic>) {
+            print(data);
             return UserProfileModel.fromMap(data);
           } else {
             throw FormatException("Unexpected data format: $data");
@@ -116,9 +117,59 @@ class UserRepository {
     }
   }
 
+ Future<UserProfileModel> fetchByUser(int id) async {
+    String url = "${ApiUrls.customerByUser}/$id/";
+
+    try {
+      final response =
+          await http.get(Uri.parse(url), headers: await getHeaders());
+
+      // Check response status
+      switch (response.statusCode) {
+        case 200:
+          // Parse and validate data
+          final data = json.decode(response.body);
+
+          if (data is Map<String, dynamic>) {
+            print(data);
+            return UserProfileModel.fromMap(data);
+          } else {
+            throw FormatException("Unexpected data format: $data");
+          }
+
+        case 400:
+          throw BadRequestException(
+              'Bad Request: Invalid parameters provided.');
+        case 401:
+          throw UnauthorizedException(
+              'Unauthorized: Invalid or missing token.');
+        case 403:
+          throw ForbiddenException(
+              'Forbidden: Access to the resource is denied.');
+        case 404:
+          throw NotFoundException(
+              'Not Found: The requested resource was not found.');
+        case 500:
+        case 502:
+        case 503:
+        case 504:
+          throw InternalServerException(
+              'Server Error: Something went wrong on the server side.');
+        default:
+          throw UnknownException(
+              'Unknown Error: Failed with status code ${response.statusCode}.');
+      }
+    } on http.ClientException catch (e) {
+      throw NetworkException('Network Error: $e');
+    } on FormatException catch (e) {
+      throw CommonException('Data Format Error: $e');
+    } catch (e) {
+      throw UnknownException('An unexpected error occurred: $e');
+    }
+  }
   // update User
   Future<void> updateUser(UserProfileModel data) async {
-    final url = '${ApiUrls.user}/${data.id}/';
+    final url = '${ApiUrls.customer}/${data.id}/';
 
     try {
       final response = await http.put(
@@ -161,7 +212,7 @@ class UserRepository {
 
   // delete user
   Future<void> deleteUser(int id) async {
-    final url = '${ApiUrls.user}/$id/';
+    final url = '${ApiUrls.customer}/$id/';
 
     try {
       final response = await http.delete(

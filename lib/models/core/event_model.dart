@@ -45,7 +45,6 @@ class EventModel {
     this.business,
   });
 
-
   EventModel copyWith({
     int? id,
     String? name,
@@ -117,26 +116,44 @@ class EventModel {
       name: map['name'] as String,
       created_at: DateTime.parse(map['created_at'] as String),
       updated_at: DateTime.parse(map['updated_at'] as String),
-      description: map['description'] != null ? map['description'] as String : null,
+      description:
+          map['description'] != null ? map['description'] as String : null,
       user: map['user'] != null ? map['user'] as int : null,
       location: map['location'] != null ? map['location'] as String : null,
-      start_date: map['start_date'] != null ? DateTime.parse(map['start_date'] as String) : null,
-      end_date: map['end_date'] != null ? DateTime.parse(map['end_date'] as String) : null,
-      price: map['price'] != null ? map['price'] as double : null,
-      currency: Currency.values.firstWhere((e) => e.name == map['currency']),
+      start_date: map['start_date'] != null
+          ? DateTime.parse(map['start_date'] as String)
+          : null,
+      end_date: map['end_date'] != null
+          ? DateTime.parse(map['end_date'] as String)
+          : null,
+      price: map['price'] != null ? (map['price'] as num).toDouble() : null,
+      currency: Currency.values.firstWhere(
+        (e) => e.name == map['currency'],
+        orElse: () =>
+            Currency.PKR, // Replace `defaultCurrency` with a valid default
+      ),
       image_url: map['image_url'] != null ? map['image_url'] as String : null,
       guest_count: map['guest_count'] as int,
-      budget: map['budget'] as double,
-      status: Status.values.firstWhere((e) => e.name == map['status']),
-      maximum_capacity: map['maximum_capacity'] != null ? map['maximum_capacity'] as int : null,
-      minimum_capacity: map['minimum_capacity'] != null ? map['minimum_capacity'] as int : null,
+      budget: (map['budget'] as num).toDouble(),
+      status: Status.values.firstWhere(
+        (e) => e.name == map['status'],
+        orElse: () =>
+            Status.DRAFT, // Replace `defaultStatus` with a valid default
+      ),
+      maximum_capacity: map['maximum_capacity'] != null
+          ? map['maximum_capacity'] as int
+          : null,
+      minimum_capacity: map['minimum_capacity'] != null
+          ? map['minimum_capacity'] as int
+          : null,
       business: map['business'] != null ? map['business'] as int : null,
     );
   }
 
   String toJson() => json.encode(toMap());
 
-  factory EventModel.fromJson(String source) => EventModel.fromMap(json.decode(source) as Map<String, dynamic>);
+  factory EventModel.fromJson(String source) =>
+      EventModel.fromMap(json.decode(source) as Map<String, dynamic>);
 
   @override
   String toString() {
@@ -146,47 +163,46 @@ class EventModel {
   @override
   bool operator ==(covariant EventModel other) {
     if (identical(this, other)) return true;
-  
-    return 
-      other.id == id &&
-      other.name == name &&
-      other.created_at == created_at &&
-      other.updated_at == updated_at &&
-      other.description == description &&
-      other.user == user &&
-      other.location == location &&
-      other.start_date == start_date &&
-      other.end_date == end_date &&
-      other.price == price &&
-      other.currency == currency &&
-      other.image_url == image_url &&
-      other.guest_count == guest_count &&
-      other.budget == budget &&
-      other.status == status &&
-      other.maximum_capacity == maximum_capacity &&
-      other.minimum_capacity == minimum_capacity &&
-      other.business == business;
+
+    return other.id == id &&
+        other.name == name &&
+        other.created_at == created_at &&
+        other.updated_at == updated_at &&
+        other.description == description &&
+        other.user == user &&
+        other.location == location &&
+        other.start_date == start_date &&
+        other.end_date == end_date &&
+        other.price == price &&
+        other.currency == currency &&
+        other.image_url == image_url &&
+        other.guest_count == guest_count &&
+        other.budget == budget &&
+        other.status == status &&
+        other.maximum_capacity == maximum_capacity &&
+        other.minimum_capacity == minimum_capacity &&
+        other.business == business;
   }
 
   @override
   int get hashCode {
     return id.hashCode ^
-      name.hashCode ^
-      created_at.hashCode ^
-      updated_at.hashCode ^
-      description.hashCode ^
-      user.hashCode ^
-      location.hashCode ^
-      start_date.hashCode ^
-      end_date.hashCode ^
-      price.hashCode ^
-      currency.hashCode ^
-      image_url.hashCode ^
-      guest_count.hashCode ^
-      budget.hashCode ^
-      status.hashCode ^
-      maximum_capacity.hashCode ^
-      minimum_capacity.hashCode ^
-      business.hashCode;
+        name.hashCode ^
+        created_at.hashCode ^
+        updated_at.hashCode ^
+        description.hashCode ^
+        user.hashCode ^
+        location.hashCode ^
+        start_date.hashCode ^
+        end_date.hashCode ^
+        price.hashCode ^
+        currency.hashCode ^
+        image_url.hashCode ^
+        guest_count.hashCode ^
+        budget.hashCode ^
+        status.hashCode ^
+        maximum_capacity.hashCode ^
+        minimum_capacity.hashCode ^
+        business.hashCode;
   }
 }
