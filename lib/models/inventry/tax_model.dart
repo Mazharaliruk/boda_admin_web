@@ -58,13 +58,13 @@ class TaxModel {
     return <String, dynamic>{
       'id': id,
       'name': name,
-      'created_at': created_at.millisecondsSinceEpoch,
-      'updated_at': updated_at.millisecondsSinceEpoch,
+      'created_at': created_at.toIso8601String(),
+      'updated_at': updated_at.toIso8601String(),
       'service_id': service_id,
       'is_active': is_active,
       'tax_percent': tax_percent,
-      'start_date': start_date?.millisecondsSinceEpoch,
-      'end_date': end_date?.millisecondsSinceEpoch,
+      'start_date': start_date?.toIso8601String(),
+      'end_date': end_date?.toIso8601String(),
       'description': description,
     };
   }

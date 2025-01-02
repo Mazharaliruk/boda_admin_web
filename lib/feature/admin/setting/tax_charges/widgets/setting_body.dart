@@ -35,7 +35,7 @@ class _SettingBodyState extends ConsumerState<SettingBody> {
               onPressed: () {
                 showCustomDialog(
                     context: context,
-                    content: const AddTaxChargesDialog(isEdit: false));
+                    content:  AddTaxChargesDialog(isEdit: false));
               },
               buttonText: 'Add Charges or Taxes',
               buttonHeight: 30,
@@ -153,7 +153,8 @@ class _SettingBodyState extends ConsumerState<SettingBody> {
                                     onTap: () {
                                       showCustomDialog(
                                           context: context,
-                                          content: const AddTaxChargesDialog(
+                                          content:  AddTaxChargesDialog(
+                                            taxModel: tax,
                                               isEdit: true));
                                     },
                                     child: Container(

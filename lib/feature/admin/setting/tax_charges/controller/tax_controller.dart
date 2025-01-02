@@ -32,5 +32,14 @@ final _serviceRepo = ServiceRepository();
   Future<void> deleteTax(int id) async => await _taxRepo.deleteTax(id);
 
 
+// update tax
+  Future<void> updateTax(TaxModel data) async => await _taxRepo.updateTax(data);
+
+  // fetch tax by id
+  Future<TaxModel?> fetchTaxById(int  id) async => await _taxRepo.fetchTaxById(id);
+
+
+  // fetch service by id
+  Future<ServiceModel> fetchServiceById(int  id) async => await _serviceRepo.fetchOnlyOneService(id);
 
 }

@@ -108,6 +108,50 @@ Future<void> addTax(Map<String, dynamic> data) async {
 }
 
 
+
+// Fetch a single tax by ID
+Future<TaxModel?> fetchTaxById(int taxId) async {
+  final url = '${ApiUrls.taxe}$taxId/'; // Adjusted endpoint for fetching by ID
+  print(url);
+
+  try {
+    final response = await http.get(
+      Uri.parse(url),
+      headers: await getHeaders(), // Add headers if required
+    );
+
+    // Handle response status codes
+    switch (response.statusCode) {
+      case 200:
+        final data = json.decode(response.body); // Parse the response JSON
+        print(data);
+        return TaxModel.fromMap(data); // Convert JSON to TaxModel
+      case 400:
+        throw BadRequestException('Bad Request: Invalid data for fetching.');
+      case 401:
+        throw UnauthorizedException('Unauthorized: Invalid or missing token.');
+      case 403:
+        throw ForbiddenException('Forbidden: You do not have permission to view this tax.');
+      case 404:
+        throw NotFoundException('Not Found: The requested tax does not exist.');
+      case 500:
+      case 502:
+      case 503:
+      case 504:
+        throw InternalServerException('Server Error: Something went wrong on the server side.');
+      default:
+        throw UnknownException(
+            'Unknown Error: Fetch failed with status code ${response.statusCode}.');
+    }
+  } on http.ClientException catch (e) {
+    throw NetworkException('Network Error: $e');
+  } on FormatException catch (e) {
+    throw CommonException('Data Format Error: $e');
+  } catch (e) {
+    throw UnknownException('An unexpected error occurred: $e');
+  }
+}
+
     
 // Update category
 Future<void> updateTax(TaxModel data) async {

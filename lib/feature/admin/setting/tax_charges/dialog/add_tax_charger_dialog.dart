@@ -1,3 +1,5 @@
+// ignore_for_file: must_be_immutable
+
 import 'package:admin_boda/commons/common_functions/padding.dart';
 import 'package:admin_boda/commons/common_imports/apis_commons.dart';
 import 'package:admin_boda/commons/common_imports/common_libs.dart';
@@ -8,13 +10,15 @@ import 'package:admin_boda/utils/constants/assets_manager.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../../../../models/core/service_model.dart';
+import '../../../../../models/inventry/tax_model.dart';
 import '../../../../../utils/error_screen.dart';
 import '../../../../../utils/loading.dart';
 import '../controller/tax_controller.dart';
 
 class AddTaxChargesDialog extends ConsumerStatefulWidget {
-  const AddTaxChargesDialog({super.key, required this.isEdit});
+   AddTaxChargesDialog({super.key, required this.isEdit,  this.taxModel});
   final bool isEdit;
+TaxModel? taxModel;
 
   @override
   ConsumerState<AddTaxChargesDialog> createState() =>
@@ -27,6 +31,39 @@ class _AddTaxChargesDialogState extends ConsumerState<AddTaxChargesDialog> {
   final _amountInPercentageCtr = TextEditingController();
   final _descriptionCtr = TextEditingController();
   final _serviceController = TextEditingController();
+
+
+@override
+void initState() {
+  super.initState();
+  if (widget.isEdit) {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+     final taxController =  ref.read(taxProvider);
+      try {
+
+        if(widget.taxModel !=null){
+
+            final fetchedTax = await ref.read(taxProvider).fetchTaxById(widget.taxModel!.id);
+        if (fetchedTax != null) {
+            final service = await ref.read(taxProvider).fetchServiceById(fetchedTax.service_id);
+
+          setState(() {
+            _titleCtr.text = fetchedTax.name;
+            _amountInPercentageCtr.text = fetchedTax.tax_percent.toString();
+            _descriptionCtr.text = fetchedTax.description??'';
+            _serviceController.text = service.name;
+            taxController.selectedService = service;
+          });
+        }
+        }
+      
+      } catch (e) {
+        print("Error fetching tax: $e");
+      }
+    });
+  }
+}
+
 
   @override
   Widget build(BuildContext context) {
@@ -169,7 +206,21 @@ class _AddTaxChargesDialogState extends ConsumerState<AddTaxChargesDialog> {
                   ),
                   padding12,
                   CustomButton(
-                    onPressed: () {
+                    onPressed:widget.isEdit?(){
+                      if(_formKey.currentState!.validate()){
+                        if(widget.taxModel !=null){
+                          taxController.updateTax(widget.taxModel!.copyWith(
+                            name: _titleCtr.text,
+                            service_id: taxController.selectedService.id,
+                            tax_percent: double.parse(_amountInPercentageCtr.text),
+                            description: _descriptionCtr.text
+                          ));
+
+                        }
+                           
+                      }
+
+                    }: () {
                       if (_formKey.currentState!.validate()) {
                         taxController.addTax({
                           "name": _titleCtr.text,
