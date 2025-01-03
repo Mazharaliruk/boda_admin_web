@@ -44,6 +44,9 @@ class ApiUrls {
   // sales endpoints
   static const String sales = "${baseUrl}sales/v1/";
   static const String salesOrder = "${sales}orders/";
+  // order related endpoints
+  static const String fetchOrdersByEvent = "${salesOrder}by-event/";
+   static const String fetchOrdersByEventAndStatus = "${salesOrder}by-event-status/";
   static const String transaction = "${sales}transactions/";
   static const String payment = "${sales}payments/";
   static const String paymentGetway = "${sales}paymentgetways/";
@@ -57,6 +60,8 @@ class ApiUrls {
   static const String eventServices = "${core}eventservices/";
   static const String eventmedia = "${core}eventmedia/";
   static const String reviews = "${core}reviews/";
+  // revies endpoints
+  static const String reviewsByEvent = "${reviews}by-event/";
   static const String notifications = "${core}notifications/";
   static const String aiRecommendation = "${core}AIRecommendation/";
   static const String chatroom = "${core}chatrooms/";

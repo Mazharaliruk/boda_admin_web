@@ -25,7 +25,6 @@ Future<List<EventModel>> fetchEvents() async {
           // Ensure all elements in the list are properly typed
           return data.map<EventModel>((item) {
             if (item is Map<String, dynamic>) {
-              print(item);
               return EventModel.fromMap(item);
             } else {
               throw FormatException("Unexpected data format: $item");

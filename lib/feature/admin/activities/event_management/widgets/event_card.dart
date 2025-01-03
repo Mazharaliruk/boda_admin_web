@@ -1,16 +1,42 @@
+// ignore_for_file: must_be_immutable
+
 import 'package:admin_boda/commons/common_functions/padding.dart';
 import 'package:admin_boda/commons/common_imports/common_libs.dart';
+import 'package:admin_boda/core/enums/payment/order_status.dart';
+import 'package:admin_boda/feature/admin/activities/event_management/controllers/event_controller.dart';
 import 'package:admin_boda/feature/admin/activities/event_management/dialog/event_popup.dart';
 import 'package:admin_boda/utils/constants/assets_manager.dart';
 import 'package:dotted_line/dotted_line.dart';
 import 'package:flutter_popup/flutter_popup.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-class EventCard extends StatelessWidget {
-  const EventCard({super.key});
+import '../../../../../commons/common_imports/apis_commons.dart';
+import '../../../../../models/core/event_model.dart';
+import '../../../../../models/core/reviews_model.dart';
+import '../../../../../models/sales/order_model.dart';
+
+class EventCard extends ConsumerStatefulWidget {
+  EventCard({super.key, required this.eventModel});
+  EventModel eventModel;
+
+  @override
+  ConsumerState<EventCard> createState() => _EventCardState();
+}
+
+class _EventCardState extends ConsumerState<EventCard> {
+  int bookings = 0;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    WidgetsBinding.instance.addPostFrameCallback((_) async {});
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
+    final eventContoller = ref.watch(eventProvider);
+
     return Container(
       decoration: BoxDecoration(
         color: context.whiteColor,
@@ -36,12 +62,19 @@ class EventCard extends StatelessWidget {
             child: ClipRRect(
               borderRadius: const BorderRadius.only(
                   topLeft: Radius.circular(16), topRight: Radius.circular(16)),
-              child: Image.asset(
-                AppAssets.imgImage,
-                height: 100,
-                width: 100,
-                fit: BoxFit.cover,
-              ),
+              child: widget.eventModel.image_url != null
+                  ? Image.network(
+                      widget.eventModel.image_url!,
+                      height: 100,
+                      width: 100,
+                      fit: BoxFit.cover,
+                    )
+                  : Image.asset(
+                      AppAssets.uploadIcon,
+                      height: 100,
+                      width: 100,
+                      fit: BoxFit.cover,
+                    ),
             ),
           ),
           Padding(
@@ -56,7 +89,7 @@ class EventCard extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Party with friends at night - 2022',
+                          widget.eventModel.name,
                           style: getSemiBoldStyle(
                               color: context.blackColor,
                               fontSize: MyFonts.size13),
@@ -105,17 +138,56 @@ class EventCard extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    infoCard(
-                      title: 'Bookings',
-                      value: '0',
-                      icon: AppAssets.bookingSvgIcon,
-                      context: context,
-                    ),
-                    infoCard(
-                        title: 'Pending',
-                        value: '0',
-                        icon: AppAssets.pendingSvgIcon,
-                        context: context),
+                    FutureBuilder<List<OrderModel>>(
+                        future: eventContoller
+                            .fetchOrdersByEventId(widget.eventModel.id),
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return const Center(
+                                child: CircularProgressIndicator());
+                          } else if (snapshot.hasError) {
+                            return Center(
+                                child: Text(snapshot.error.toString()));
+                          } else if (!snapshot.hasData) {
+                            return infoCard(
+                              title: 'Bookings',
+                              value: '0',
+                              icon: AppAssets.bookingSvgIcon,
+                              context: context,
+                            );
+                          }
+                          return infoCard(
+                            title: 'Bookings',
+                            value: '${snapshot.data!.length}',
+                            icon: AppAssets.bookingSvgIcon,
+                            context: context,
+                          );
+                        }),
+                    FutureBuilder<List<OrderModel>>(
+                        future: eventContoller.fetchOrdersByEventIdAndStatus(
+                            widget.eventModel.id, OrderStatus.PENDING.name),
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return const Center(
+                                child: CircularProgressIndicator());
+                          } else if (snapshot.hasError) {
+                            return Center(
+                                child: Text(snapshot.error.toString()));
+                          } else if (!snapshot.hasData) {
+                            return infoCard(
+                                title: 'Pending',
+                                value: '0',
+                                icon: AppAssets.pendingSvgIcon,
+                                context: context);
+                          }
+                          return infoCard(
+                              title: 'Pending',
+                              value: '${snapshot.data!.length}',
+                              icon: AppAssets.pendingSvgIcon,
+                              context: context);
+                        }),
                   ],
                 ),
                 padding12,
@@ -128,11 +200,30 @@ class EventCard extends StatelessWidget {
                       icon: AppAssets.earningSvgIcon,
                       context: context,
                     ),
-                    infoCard(
-                        title: 'Rating',
-                        value: '0',
-                        icon: AppAssets.starSvgIcon,
-                        context: context),
+                    FutureBuilder<List<ReviewsModel>>(
+                        future: eventContoller
+                            .fetchReviewByEvent(widget.eventModel.id),
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return const Center(
+                                child: CircularProgressIndicator());
+                          } else if (snapshot.hasError) {
+                            return Center(
+                                child: Text(snapshot.error.toString()));
+                          } else if (!snapshot.hasData) {
+                            return infoCard(
+                                title: 'Rating',
+                                value: '0',
+                                icon: AppAssets.starSvgIcon,
+                                context: context);
+                          }
+                          return infoCard(
+                              title: 'Rating',
+                              value: '0',
+                              icon: AppAssets.starSvgIcon,
+                              context: context);
+                        }),
                   ],
                 ),
               ],
