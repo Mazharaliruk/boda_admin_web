@@ -10,6 +10,7 @@ import 'package:intl/intl.dart';
 import '../../../../../models/account/user_profile_model.dart';
 import '../../../../../models/core/event_model.dart';
 import '../../../../../models/sales/order_model.dart';
+import '../../../../../utils/loading.dart';
 import '../controllers/booking_controller.dart';
 
 class BookingBody extends ConsumerStatefulWidget {
@@ -101,7 +102,7 @@ class _BookingBodyState extends ConsumerState<BookingBody> {
               future: bookingController.fetchOrders(),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(child: CircularProgressIndicator());
+                  return const Center(child: LoadingWidget());
                 } else if (snapshot.hasError) {
                   return Center(child: Text(snapshot.error.toString()));
                 } else if (!snapshot.hasData) {

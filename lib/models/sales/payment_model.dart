@@ -86,24 +86,36 @@ class PaymentModel {
       'refun_amount': refun_amount,
     };
   }
-
-  factory PaymentModel.fromMap(Map<String, dynamic> map) {
-    return PaymentModel(
-      id: map['id'] as int,
-      created_at: DateTime.parse(map['created_at'] as String),
-      updated_at: DateTime.parse(map['updated_at'] as String),
-      amount: map['amount'] as double,
-      payment_data: map['payment_data'] != null ? DateTime.parse(map['payment_data'] as String) : null,
-      currency: map['currency'] ,
-      status: map['status'] ,
-      order: map['order'] as int,
-      payment_getway: map['payment_getway'] as int,
-      transaction: map['transaction'] as int,
-      getway_response: map['getway_response'] != null ? map['getway_response'] as String : null,
-      payment_method: map['payment_method'],
-      refun_amount: map['refun_amount'] != null ? map['refun_amount'] as double : null,
-    );
-  }
+factory PaymentModel.fromMap(Map<String, dynamic> map) {
+  return PaymentModel(
+    id: map['id'] as int,
+    created_at: DateTime.parse(map['created_at'] as String),
+    updated_at: DateTime.parse(map['updated_at'] as String),
+    amount: (map['amount'] as num).toDouble(), // Handle double and int values
+    payment_data: map['payment_date'] != null
+        ? DateTime.parse(map['payment_date'] as String)
+        : null, // Corrected field name
+    currency: Currency.values.firstWhere(
+      (element) => element.name == map['currency'],
+      orElse: () => Currency.PKR, // Fallback for unmatched values
+    ),
+    status: PaymentStatus.values.firstWhere(
+      (element) => element.name == map['status'],
+      orElse: () => PaymentStatus.UNPAID, // Fallback for unmatched values
+    ),
+    order: map['order'] as int,
+    payment_getway: map['payment_getway'] as int, // Corrected field name
+    transaction: map['transaction'] as int,
+    getway_response: map['getway_response'] as String?, // Corrected field name
+    payment_method: PaymentMethod.values.firstWhere(
+      (element) => element.name == map['payment_method'],
+      orElse: () => PaymentMethod.CREDIT_CARD, // Fallback for unmatched values
+    ),
+    refun_amount: map['refund_amount'] != null
+        ? (map['refund_amount'] as num).toDouble()
+        : 0.0, // Corrected field name
+  );
+}
 
   String toJson() => json.encode(toMap());
 

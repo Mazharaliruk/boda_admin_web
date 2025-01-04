@@ -25,6 +25,7 @@ Future<List<PaymentModel>> fetchPayment() async {
           // Ensure all elements in the list are properly typed
           return data.map<PaymentModel>((item) {
             if (item is Map<String, dynamic>) {
+              print(item);
               return PaymentModel.fromMap(item);
             } else {
               throw FormatException("Unexpected data format: $item");
