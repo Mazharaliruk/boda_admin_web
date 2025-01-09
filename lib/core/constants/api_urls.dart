@@ -8,30 +8,26 @@ class ApiUrls {
     return accessToken;
   }
 
-
-    static Future<String?> getrefreshToken() async {
+  static Future<String?> getrefreshToken() async {
     final prefs = await SharedPreferences.getInstance();
-    
 
     final refreshToken = prefs.getString('refreshToken');
     return refreshToken;
   }
 
-
- 
   static const String baseUrl = "http://127.0.0.1:8000/";
 
   // user endpoints
   static const String login = "${baseUrl}api/user/login/";
   static const String register = "${baseUrl}api/user/register/";
   static const String logout = "${baseUrl}api/user/logout/";
+  // delete auth user
+  static const String deleteAuthUser = "${baseUrl}api/user/delete/";
   static const String profile = "${baseUrl}api/user/profile/";
   static const String userList = "${baseUrl}api/user/list/";
   static const String vendorList = "${baseUrl}api/vendor/list/";
   static const String customer = "${baseUrl}api/customer";
   static const String customerByUser = "${baseUrl}api/customer_by_user";
-
-
 
   // Inventry endpoints
   static const String inventry = "${baseUrl}inventry/v1/";
@@ -46,7 +42,8 @@ class ApiUrls {
   static const String salesOrder = "${sales}orders/";
   // order related endpoints
   static const String fetchOrdersByEvent = "${salesOrder}by-event/";
-   static const String fetchOrdersByEventAndStatus = "${salesOrder}by-event-status/";
+  static const String fetchOrdersByEventAndStatus =
+      "${salesOrder}by-event-status/";
   static const String transaction = "${sales}transactions/";
   static const String payment = "${sales}payments/";
   static const String paymentGetway = "${sales}paymentgetways/";
@@ -66,6 +63,4 @@ class ApiUrls {
   static const String aiRecommendation = "${core}AIRecommendation/";
   static const String chatroom = "${core}chatrooms/";
   static const String messages = "${core}messages/";
-
-
 }

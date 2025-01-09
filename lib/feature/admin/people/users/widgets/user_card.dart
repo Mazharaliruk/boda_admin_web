@@ -9,10 +9,15 @@ import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
 
 import '../../../../../models/account/user_profile_model.dart';
+import '../controller/customer_controller.dart';
 
 class UserCard extends StatelessWidget {
-  UserCard({super.key, required this.userProfileModel});
+  UserCard(
+      {super.key,
+      required this.userProfileModel,
+      required this.customerController});
   UserProfileModel userProfileModel;
+  CustomerController customerController;
 
   @override
   Widget build(BuildContext context) {
@@ -86,7 +91,13 @@ class UserCard extends StatelessWidget {
             overlayColor: MaterialStateProperty.all(Colors.transparent),
             onTap: () {
               showCustomDialog(
-                  context: context, content: const DeleteUserDialog());
+                  context: context,
+                  content: DeleteUserDialog(
+                    onPressed: () {
+                      customerController.deleteUser(userProfileModel.user);
+                      Navigator.pop(context);
+                    },
+                  ));
             },
             child: Container(
               height: 44.h,

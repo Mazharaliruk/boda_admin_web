@@ -1,3 +1,5 @@
+// ignore_for_file: must_be_immutable
+
 import 'package:admin_boda/commons/common_functions/padding.dart';
 import 'package:admin_boda/commons/common_imports/common_libs.dart';
 import 'package:admin_boda/commons/common_widgets/custom_button.dart';
@@ -5,7 +7,8 @@ import 'package:admin_boda/utils/constants/assets_manager.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class DeleteUserDialog extends StatelessWidget {
-  const DeleteUserDialog({super.key});
+   DeleteUserDialog({super.key, required this.onPressed});
+  dynamic Function()? onPressed;
 
   @override
   Widget build(BuildContext context) {
@@ -52,7 +55,7 @@ class DeleteUserDialog extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 CustomButton(
-                  onPressed: () {},
+                  onPressed: onPressed,
                   buttonText: 'Delete',
                   buttonHeight: 48,
                   buttonWidth: 141,

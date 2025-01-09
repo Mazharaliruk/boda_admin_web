@@ -58,7 +58,9 @@ class _PaymentBodyState extends ConsumerState<VendorsBody> {
                   physics: const BouncingScrollPhysics(),
                   padding: const EdgeInsets.only(top: 0, bottom: 100),
                   itemBuilder: (context, index) {
-                    return  VendorCard( vendorProfileModel: snapshot.data![index],);
+                    return  VendorCard( vendorProfileModel: snapshot.data![index],
+                    vendorCtr: vendorCtr,
+                    );
                   });
             }
           ),
