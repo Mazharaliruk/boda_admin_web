@@ -249,10 +249,9 @@ class _CreateBannerDialogState extends ConsumerState<CreateBannerDialog> {
                           await discountcontroller.createTextPromotion({
                             "name": titleCtr.text,
                             "description": description.text,
-                            "discount_percent": double.parse(ofTextCtr.text),
+                            // "discount_percent": double.parse(ofTextCtr.text),
                             "start_date": _selectedFromDate,
                             "end_date": _selectedToDate,
-                        
                           });
                           Navigator.pop(context);
                         }

@@ -117,7 +117,7 @@ class UserRepository {
     }
   }
 
- Future<UserProfileModel> fetchByUser(int id) async {
+  Future<UserProfileModel> fetchByUser(int id) async {
     String url = "${ApiUrls.customerByUser}/$id/";
 
     try {
@@ -167,6 +167,7 @@ class UserRepository {
       throw UnknownException('An unexpected error occurred: $e');
     }
   }
+
   // update User
   Future<void> updateUser(UserProfileModel data) async {
     final url = '${ApiUrls.customer}/${data.id}/';
@@ -212,8 +213,8 @@ class UserRepository {
 
   // delete user
   Future<void> deleteUser(int id) async {
-    final url = '${ApiUrls.customer}/$id/';
-
+    final url = '${ApiUrls.deleteAuthUser}$id/';
+    print(url);
     try {
       final response = await http.delete(
         Uri.parse(url),
@@ -222,23 +223,32 @@ class UserRepository {
 
       // Handle response status codes
       switch (response.statusCode) {
+        case 200:
+          print(response.body);
+          print('User deleted successfully');
+          return;
         case 204:
           print('User deleted successfully');
           return;
         case 400:
-          throw BadRequestException('Bad Request: Invalid ID provided for deletion');
+          throw BadRequestException(
+              'Bad Request: Invalid ID provided for deletion');
         case 401:
           throw UnauthorizedException('Unauthorized: Invalid or missing token');
         case 403:
-          throw ForbiddenException('Forbidden: You do not have permission to delete this user');
+          throw ForbiddenException(
+              'Forbidden: You do not have permission to delete this user');
         case 404:
           throw NotFoundException('Not Found: The user does not exist');
         case 500:
         case 502:
         case 503:
-        case 504: throw InternalServerException('Server Error: Something went wrong on the server side');
+        case 504:
+          throw InternalServerException(
+              'Server Error: Something went wrong on the server side');
         default:
-          throw UnknownException('Unknown Error: Deletion failed with status code ${response.statusCode}');
+          throw UnknownException(
+              'Unknown Error: Deletion failed with status code ${response.statusCode}');
       }
     } on http.ClientException catch (e) {
       throw NetworkException('Network Error: $e');

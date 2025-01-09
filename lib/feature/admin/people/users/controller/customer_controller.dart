@@ -17,4 +17,9 @@ final _userRepository = UserRepository();
     return await _userRepository.fetchUserList();
   }
 
+  // delete user
+  Future<void> deleteUser(int id) async {
+    return await _userRepository.deleteUser(id);
+  }
+
 }

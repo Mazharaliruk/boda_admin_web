@@ -10,10 +10,13 @@ import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
 
 import '../../../../../models/account/vendor_profile_model.dart';
+import '../controllers/vendor_controller.dart';
 
 class VendorCard extends StatelessWidget {
-   VendorCard({super.key, required this.vendorProfileModel});
-VendorProfileModel vendorProfileModel;
+  VendorCard(
+      {super.key, required this.vendorProfileModel, required this.vendorCtr});
+  VendorProfileModel vendorProfileModel;
+  VendorController vendorCtr;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -72,8 +75,8 @@ VendorProfileModel vendorProfileModel;
                   style: getRegularStyle(
                       color: context.lightTextColor, fontSize: MyFonts.size14)),
               Text(
-                DateFormat('dd-MM-yyyy').format(
-                    DateTime.parse(vendorProfileModel.date_of_birth.toString())),
+                DateFormat('dd-MM-yyyy').format(DateTime.parse(
+                    vendorProfileModel.date_of_birth.toString())),
                 textAlign: TextAlign.center,
                 style: getRegularStyle(
                   color: context.blackColor,
@@ -113,7 +116,13 @@ VendorProfileModel vendorProfileModel;
                 overlayColor: MaterialStateProperty.all(Colors.transparent),
                 onTap: () {
                   showCustomDialog(
-                      context: context, content: const DeleteUserDialog());
+                      context: context,
+                      content: DeleteUserDialog(
+                        onPressed: () {
+                          vendorCtr.deleteVendor(vendorProfileModel.user);
+                          Navigator.pop(context);
+                        },
+                      ));
                 },
                 child: Container(
                   height: 44.h,
