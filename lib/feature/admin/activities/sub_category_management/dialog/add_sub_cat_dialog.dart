@@ -103,7 +103,6 @@ class _AddSubCategoryDialogState extends ConsumerState<AddSubCategoryDialog> {
                 hintText: 'Enter Title',
                 label: 'Title',
               ),
-
               FutureBuilder<List<CategoriesModel>>(
                   future: categroyController.fetchCategories(),
                   builder: (context, snapshot) {
@@ -146,7 +145,6 @@ class _AddSubCategoryDialogState extends ConsumerState<AddSubCategoryDialog> {
                       },
                     );
                   }),
-            
               CustomTextField(
                 fillColor: context.whiteColor,
                 verticalPadding: 10,
@@ -177,8 +175,8 @@ class _AddSubCategoryDialogState extends ConsumerState<AddSubCategoryDialog> {
                       subCategoryController.saveSubCategory({
                         "name": subCateTitle.text,
                         "description": description.text,
-                        "category": subCategoryController
-                            .selectedSubCategory!.id,
+                        "category":
+                            subCategoryController.selectedSubCategory!.id,
                       }, File(pickedFile!.path));
                       Navigator.pop(context);
                     },

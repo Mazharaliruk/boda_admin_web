@@ -1,6 +1,7 @@
 import 'package:admin_boda/commons/common_imports/apis_commons.dart';
 import 'package:admin_boda/commons/common_imports/common_libs.dart';
 import 'package:admin_boda/feature/auth/view/sign_in_screen.dart';
+import 'package:admin_boda/init/init_services.dart';
 import 'package:admin_boda/routes/route_manager.dart';
 import 'package:admin_boda/utils/constants/app_constants.dart';
 import 'package:admin_boda/utils/themes/theme.dart';
@@ -21,6 +22,9 @@ void main() async {
     android: true,
     iOS: true,
   );
+
+  // Initialize services
+  await InitServices.init();
 
   // Run the app inside ProviderScope to use Riverpod
   runApp(

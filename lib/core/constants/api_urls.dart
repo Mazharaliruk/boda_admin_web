@@ -68,4 +68,25 @@ class ApiUrls {
   static const String messages = "${core}messages/";
 
 
+
+// Streaming urls
+//  ws://127.0.0.1:8000/ws/chatroom/1/
+ static const String wsBaseUrl = "ws://127.0.0.1:8000/";
+   static String wsChatRoom(int roomId, String token) {
+    return "${wsBaseUrl}ws/chatroom/$roomId/?token=$token";
+  }
+
+  // messages
+  static String wsMessage(String token) {
+    return "${wsBaseUrl}ws/messages/?token=$token";
+  }
+
+// chatrooms
+  static String wsChatRooms="${wsBaseUrl}ws/chatrooms/";
+  
+// categories
+  static String wsCategories="${wsBaseUrl}ws/categories/";
+ 
+  
+
 }

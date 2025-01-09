@@ -17,9 +17,17 @@ class CategoryBody extends ConsumerStatefulWidget {
 }
 
 class _CategoryBodyState extends ConsumerState<CategoryBody> {
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     final categoryController = ref.watch(categoryManagementProvider);
+
 
 
     return Column(
@@ -48,8 +56,8 @@ class _CategoryBodyState extends ConsumerState<CategoryBody> {
             decoration: BoxDecoration(
                 color: context.whiteColor,
                 borderRadius: BorderRadius.circular(14.r)),
-            child: FutureBuilder<List<CategoriesModel>>(
-                future: categoryController.fetchCategories(),
+            child: StreamBuilder<List<CategoriesModel>>(
+                stream: categoryController.listenForCategoryUpdates(),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                      return const LoadingWidget();
