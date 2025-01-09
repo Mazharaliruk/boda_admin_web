@@ -1,6 +1,8 @@
 
 import 'dart:io';
 
+import 'package:admin_boda/data/repositories/core/event_repository.dart';
+import 'package:admin_boda/models/core/event_model.dart';
 import 'package:admin_boda/models/inventry/discount_model.dart';
 
 import '../../../../../commons/common_imports/apis_commons.dart';
@@ -10,6 +12,7 @@ final discountProvider = ChangeNotifierProvider((ref) => DiscountController());
 class DiscountController  extends ChangeNotifier{
   
 final _discountRepository = DiscountRepository();
+final _eventRepository = EventRepository();
 
 
 
@@ -61,4 +64,10 @@ final _discountRepository = DiscountRepository();
   Future<void> saveDiscount(Map<String, dynamic> data, [File? imageFile])async{
     _discountRepository.saveDiscount(data, imageFile);
   }
+
+
+    Future<DiscountModel?> fetchDiscountById(int  id) async => await _discountRepository.fetchDiscountById(id);
+
+  Future<List<EventModel>> fetchEvents() async => await _eventRepository.fetchEvents();
+
 }

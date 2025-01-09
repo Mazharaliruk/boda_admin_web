@@ -1,13 +1,15 @@
 import 'package:admin_boda/commons/common_functions/padding.dart';
 import 'package:admin_boda/commons/common_imports/common_libs.dart';
+import 'package:admin_boda/models/core/event_model.dart';
 import 'package:admin_boda/utils/constants/assets_manager.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class ApplyCard extends StatefulWidget {
-  const ApplyCard(
-      {super.key, this.isSelect = false, required this.onChangeValue});
+   ApplyCard(
+      {super.key, this.isSelect = false, required this.onChangeValue, required this.eventModel});
   final bool isSelect;
   final Function(bool? val) onChangeValue;
+  EventModel eventModel;
 
   @override
   State<ApplyCard> createState() => _ApplyCardState();

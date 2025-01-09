@@ -1,13 +1,20 @@
+// ignore_for_file: must_be_immutable
+
 import 'package:admin_boda/commons/common_functions/padding.dart';
 import 'package:admin_boda/commons/common_imports/common_libs.dart';
 import 'package:admin_boda/commons/common_widgets/custom_button.dart';
 import 'package:admin_boda/commons/common_widgets/custom_text_fields.dart';
 import 'package:admin_boda/feature/admin/promotion/discount_management/widgets/apply_card.dart';
+import 'package:admin_boda/models/core/event_model.dart';
 import 'package:admin_boda/utils/constants/assets_manager.dart';
+import 'package:admin_boda/utils/loading.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
+import '../controller/discount_controller.dart';
+
 class ApplyDiscountDialog extends StatefulWidget {
-  const ApplyDiscountDialog({super.key});
+  ApplyDiscountDialog({super.key, required this.discountcontroller});
+  DiscountController discountcontroller;
 
   @override
   State<ApplyDiscountDialog> createState() => _ApplyDiscountDialogState();
@@ -15,13 +22,13 @@ class ApplyDiscountDialog extends StatefulWidget {
 
 class _ApplyDiscountDialogState extends State<ApplyDiscountDialog> {
   final searchCtr = TextEditingController();
-  bool selectAll = false;
-  int length = 30;
 
-  List<bool> isSelected = [];
+  List<EventModel> events = [];
+  List<EventModel> selectedEvents = [];
+
+
   @override
   void initState() {
-    isSelected = List<bool>.filled(length, false);
     super.initState();
   }
 
@@ -96,12 +103,9 @@ class _ApplyDiscountDialogState extends State<ApplyDiscountDialog> {
                 Checkbox(
                     side: BorderSide(color: context.darkGreyColor, width: 2),
                     activeColor: context.primary,
-                    value: selectAll,
+                    value: false,
                     onChanged: (val) {
-                      setState(() {
-                        selectAll = val!;
-                        isSelected = List<bool>.filled(length, val);
-                      });
+                   
                     }),
                 Text(
                   'Select All',
@@ -112,17 +116,25 @@ class _ApplyDiscountDialogState extends State<ApplyDiscountDialog> {
             ),
             padding12,
             Expanded(
-              child: ListView.builder(
-                  itemCount: length,
-                  shrinkWrap: true,
-                  itemBuilder: (context, index) {
-                    return ApplyCard(
-                        onChangeValue: (val) {
-                          setState(() {
-                            isSelected[index] = val!;
-                          });
-                        },
-                        isSelect: isSelected[index]);
+              child: FutureBuilder<List<EventModel>>(
+                  future: widget.discountcontroller.fetchEvents(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const LoadingWidget();
+                    } else if (!snapshot.hasData) {
+                      return const Text("Events Not Found");
+                    }
+                    return ListView.builder(
+                        itemCount: snapshot.data!.length,
+                        shrinkWrap: true,
+                        itemBuilder: (context, index) {
+                          return ApplyCard(
+                            eventModel: snapshot.data![index],
+                              onChangeValue: (val) {
+                             
+                              },
+                              isSelect: false);
+                        });
                   }),
             )
           ],

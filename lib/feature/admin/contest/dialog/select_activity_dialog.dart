@@ -96,13 +96,14 @@ class _SelectActivityDialogState extends State<SelectActivityDialog> {
                   itemCount: length,
                   shrinkWrap: true,
                   itemBuilder: (context, index) {
-                    return ApplyCard(
-                        onChangeValue: (val) {
-                          setState(() {
-                            isSelected[index] = val!;
-                          });
-                        },
-                        isSelect: isSelected[index]);
+                    // return ApplyCard(
+                    //     onChangeValue: (val) {
+                    //       setState(() {
+                    //         isSelected[index] = val!;
+                    //       });
+                    //     },
+                    //     isSelect: isSelected[index]);
+                    return Container();
                   }),
             )
           ],

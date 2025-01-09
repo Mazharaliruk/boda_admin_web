@@ -1,11 +1,20 @@
+// ignore_for_file: must_be_immutable
+
 import 'package:admin_boda/commons/common_functions/padding.dart';
 import 'package:admin_boda/commons/common_imports/apis_commons.dart';
 import 'package:admin_boda/commons/common_imports/common_libs.dart';
+import 'package:admin_boda/core/enums/payment/order_status.dart';
+import 'package:admin_boda/feature/admin/people/vendors/controllers/vendor_controller.dart';
+import 'package:admin_boda/models/account/vendor_profile_model.dart';
 import 'package:admin_boda/utils/constants/assets_manager.dart';
+import 'package:admin_boda/utils/loading.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
+import '../../../../../models/sales/order_model.dart';
+
 class VendorDetailDialog extends ConsumerStatefulWidget {
-  const VendorDetailDialog({super.key});
+  VendorDetailDialog({super.key, required this.vendorProfileModel});
+  VendorProfileModel vendorProfileModel;
 
   @override
   ConsumerState<VendorDetailDialog> createState() => _VendorDetailDialogState();
@@ -15,31 +24,32 @@ class _VendorDetailDialogState extends ConsumerState<VendorDetailDialog> {
   List vendorDetails = [
     {
       'title': 'Earnings',
-      'value': '58',
-      'trailing': '+8% since last month',
+      'value': '0',
+      'trailing': '+0% since last month',
       'icon': AppAssets.earningSvgIcon,
     },
     {
       'title': 'Booking',
-      'value': '58',
+      'value': '0',
       'trailing': 'Total bookings',
       'icon': AppAssets.bookingSvgIcon,
     },
     {
       'title': 'Sale',
-      'value': 'CFA 14.6K',
+      'value': 'CFA 0',
       'trailing': 'Total Sale',
       'icon': AppAssets.saleSvgIcon,
     },
     {
       'title': 'Upcoming Bookings',
-      'value': '12',
+      'value': '0',
       'trailing': 'Upcoming Bookings 12',
       'icon': AppAssets.bookingSvgIcon,
     },
   ];
   @override
   Widget build(BuildContext context) {
+    final vendorCtr = ref.watch(vendorController);
     return Container(
       height: 400,
       width: 584,
@@ -95,12 +105,36 @@ class _VendorDetailDialogState extends ConsumerState<VendorDetailDialog> {
                     height: 100,
                     color: context.lightGreyColor,
                   ),
-                  detailCard(
-                      title: vendorDetails[1]['title'],
-                      value: vendorDetails[1]['value'],
-                      trailing: vendorDetails[1]['trailing'],
-                      context: context,
-                      icon: vendorDetails[1]['icon']),
+                  FutureBuilder<List<OrderModel>>(
+                      future: vendorCtr.fetchOrdersByVendordAndStatus(
+                          widget.vendorProfileModel.id,
+                          OrderStatus.COMPLETED.name),
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return const Center(
+                            child: LoadingWidget(),
+                          );
+                        } else if (snapshot.hasError) {
+                          return Center(
+                            child: Text(snapshot.error.toString()),
+                          );
+                        } else if (!snapshot.hasData) {
+                          return detailCard(
+                              title: vendorDetails[1]['title'],
+                              value: vendorDetails[1]['value'],
+                              trailing: vendorDetails[1]['trailing'],
+                              context: context,
+                              icon: vendorDetails[1]['icon']);
+                        }
+
+                        return detailCard(
+                            title: vendorDetails[1]['title'],
+                            value: snapshot.data!.length.toString(),
+                            trailing: vendorDetails[1]['trailing'],
+                            context: context,
+                            icon: vendorDetails[1]['icon']);
+                      }),
                 ],
               ),
               Divider(
@@ -121,12 +155,36 @@ class _VendorDetailDialogState extends ConsumerState<VendorDetailDialog> {
                     height: 100,
                     color: context.lightGreyColor,
                   ),
-                  detailCard(
-                      title: vendorDetails[3]['title'],
-                      value: vendorDetails[3]['value'],
-                      trailing: vendorDetails[3]['trailing'],
-                      context: context,
-                      icon: vendorDetails[3]['icon']),
+                  FutureBuilder<List<OrderModel>>(
+                      future: vendorCtr.fetchOrdersByVendordAndStatus(
+                          widget.vendorProfileModel.id,
+                          OrderStatus.PENDING.name),
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return const Center(
+                            child: LoadingWidget(),
+                          );
+                        } else if (snapshot.hasError) {
+                          return Center(
+                            child: Text(snapshot.error.toString()),
+                          );
+                        } else if (!snapshot.hasData) {
+                          detailCard(
+                              title: vendorDetails[3]['title'],
+                              value: vendorDetails[3]['value'],
+                              trailing: vendorDetails[3]['trailing'],
+                              context: context,
+                              icon: vendorDetails[3]['icon']);
+                        }
+
+                        return detailCard(
+                            title: vendorDetails[1]['title'],
+                            value: snapshot.data!.length.toString(),
+                            trailing: vendorDetails[1]['trailing'],
+                            context: context,
+                            icon: vendorDetails[1]['icon']);
+                      }),
                 ],
               ),
             ],

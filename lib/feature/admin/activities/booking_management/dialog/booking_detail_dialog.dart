@@ -1,11 +1,25 @@
+// ignore_for_file: must_be_immutable
+
 import 'package:admin_boda/commons/common_functions/padding.dart';
 import 'package:admin_boda/commons/common_imports/common_libs.dart';
+import 'package:admin_boda/feature/admin/activities/booking_management/controllers/booking_controller.dart';
+import 'package:admin_boda/models/sales/order_model.dart';
 import 'package:admin_boda/utils/constants/assets_manager.dart';
+import 'package:admin_boda/utils/loading.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:intl/intl.dart';
 import 'package:readmore/readmore.dart';
 
+import '../../../../../models/account/user_profile_model.dart';
+import '../../../../../models/core/event_model.dart';
+import '../../../../../models/sales/payment_getway_model.dart';
+import '../../../../../models/sales/transaction_model.dart';
+
 class BookingDetailDialog extends StatefulWidget {
-  const BookingDetailDialog({super.key});
+  BookingDetailDialog(
+      {super.key, required this.order, required this.bookingController});
+  OrderModel order;
+  BookingController bookingController;
 
   @override
   State<BookingDetailDialog> createState() => _BookingDetailDialogState();
@@ -54,31 +68,49 @@ class _BookingDetailDialogState extends State<BookingDetailDialog> {
                   color: context.blackColor, fontSize: MyFonts.size22),
             ),
             padding40,
-            Row(
-              children: [
-                Image.asset(
-                  AppAssets.userImage,
-                  height: 50,
-                  width: 50,
-                ),
-                padding12,
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text('James Anderson',
-                        style: getSemiBoldStyle(
-                            color: context.blackColor,
-                            fontSize: MyFonts.size15)),
-                    Text(
-                      'james@gmail.com',
-                      style: getRegularStyle(
-                          color: context.lightTextColor,
-                          fontSize: MyFonts.size11),
-                    )
-                  ],
-                ),
-              ],
-            ),
+            FutureBuilder<UserProfileModel>(
+                future: widget.bookingController
+                    .fetchUser(widget.order.customer_id),
+                builder: (context, userSnap) {
+                  if (userSnap.connectionState == ConnectionState.waiting) {
+                    return const Center(child: LoadingWidget());
+                  } else if (userSnap.hasError) {
+                    return Center(child: Text(userSnap.error.toString()));
+                  } else if (!userSnap.hasData) {
+                    return const Center(child: Text("N/A"));
+                  }
+                  return Row(
+                    children: [
+                      userSnap.data!.profile_picture != null
+                          ? Image.network(
+                              userSnap.data!.profile_picture!,
+                              height: 50,
+                              width: 50,
+                            )
+                          : Image.asset(
+                              AppAssets.userImage,
+                              height: 50,
+                              width: 50,
+                            ),
+                      padding12,
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text("${userSnap.data?.name}",
+                              style: getSemiBoldStyle(
+                                  color: context.blackColor,
+                                  fontSize: MyFonts.size15)),
+                          Text(
+                            '${userSnap.data?.email}',
+                            style: getRegularStyle(
+                                color: context.lightTextColor,
+                                fontSize: MyFonts.size11),
+                          )
+                        ],
+                      ),
+                    ],
+                  );
+                }),
             padding12,
             Text(
               'Description',
@@ -99,32 +131,115 @@ class _BookingDetailDialogState extends State<BookingDetailDialog> {
                   color: context.primary, fontSize: MyFonts.size14),
             ),
             padding30,
-            tile(title: 'PRICE', value: 'CFA 50', isBatch: false),
-            padding12,
-            tile(title: 'DISCOUNT', value: '- CFA 10', isBatch: false),
+            tile(
+                title: 'PRICE',
+                value:
+                    '${widget.order.currency.name} ${widget.order.totalAmount}',
+                isBatch: false),
             padding12,
             tile(
-                title: 'PAYMENT TYPE',
-                value: 'Orange Pay',
-                isBatch: true,
-                color: context.primary),
+                title: 'DISCOUNT',
+                value:
+                    '- ${widget.order.currency.name} ${widget.order.discount_amount}',
+                isBatch: false),
+            padding12,
+            FutureBuilder<TransactionModel?>(
+                future: widget.bookingController
+                    .fetchTransactionsByOrder(widget.order.id),
+                builder: (context, transactionSnap) {
+                  if (transactionSnap.connectionState ==
+                      ConnectionState.waiting) {
+                    return const Center(child: LoadingWidget());
+                  } else if (transactionSnap.hasError) {
+                    return Center(
+                      child: Text(
+                        'Error: ${transactionSnap.error}',
+                        style: const TextStyle(color: Colors.red),
+                      ),
+                    );
+                  } else if (!transactionSnap.hasData) {
+                    return tile(
+                        title: 'PAYMENT TYPE',
+                        value: 'Orange Pay',
+                        isBatch: true,
+                        color: context.primary);
+                  }
+
+                  // Use the fetched EventModel data
+                  final transaction = transactionSnap.data!;
+                  return FutureBuilder<PaymentGetwayModel?>(
+                      future: widget.bookingController
+                          .fetchPaymentGetwayById(transaction.payment_getway),
+                      builder: (context, paymentGetwaySnap) {
+                        if (paymentGetwaySnap.connectionState ==
+                            ConnectionState.waiting) {
+                          return const Center(child: LoadingWidget());
+                        } else if (paymentGetwaySnap.hasError) {
+                          return Center(
+                            child: Text(
+                              'Error: ${paymentGetwaySnap.error}',
+                              style: const TextStyle(color: Colors.red),
+                            ),
+                          );
+                        } else if (!paymentGetwaySnap.hasData) {
+                          return tile(
+                              title: 'PAYMENT TYPE',
+                              value: 'N/A',
+                              isBatch: true,
+                              color: context.primary);
+                        }
+
+                        // Use the fetched EventModel data
+                        final paymentGeteway = paymentGetwaySnap.data!;
+                        return tile(
+                            title: 'PAYMENT TYPE',
+                            value: paymentGeteway.name,
+                            isBatch: true,
+                            color: context.primary);
+                      });
+                }),
             padding12,
             tile(
                 title: 'BOOKING STATUS',
-                value: 'PENDING',
+                value: widget.order.status.name,
                 isBatch: true,
                 color: MyColors.lightGreen),
             padding12,
             tile(
                 title: 'CREATED AT',
-                value: '16/05/2024 03:00:37 PM',
+                value: DateFormat('yyyy-MM-dd-HH:mm')
+                    .format(widget.order.created_at),
                 isBatch: false),
             padding12,
-            tile(
-                title: 'ACTIVITY BOOKED',
-                value: 'Fun',
-                isBatch: true,
-                color: MyColors.lightGreen),
+            FutureBuilder<EventModel>(
+                future:
+                    widget.bookingController.fetchEventById(widget.order.event),
+                builder: (context, eventSnap) {
+                  if (eventSnap.connectionState == ConnectionState.waiting) {
+                    return const Center(child: LoadingWidget());
+                  } else if (eventSnap.hasError) {
+                    return Center(
+                      child: Text(
+                        'Error: ${eventSnap.error}',
+                        style: const TextStyle(color: Colors.red),
+                      ),
+                    );
+                  } else if (!eventSnap.hasData) {
+                    return tile(
+                        title: 'ACTIVITY BOOKED',
+                        value: "N/A",
+                        isBatch: true,
+                        color: MyColors.lightGreen);
+                  }
+
+                  // Use the fetched EventModel data
+                  final event = eventSnap.data!;
+                  return tile(
+                      title: 'ACTIVITY BOOKED',
+                      value: event.name,
+                      isBatch: true,
+                      color: MyColors.lightGreen);
+                }),
             padding12,
           ],
         ),

@@ -44,7 +44,14 @@ class ApiUrls {
   static const String fetchOrdersByEvent = "${salesOrder}by-event/";
   static const String fetchOrdersByEventAndStatus =
       "${salesOrder}by-event-status/";
+  // fetch order by vendor
+  static const String fetchOrdersByVendor = "${salesOrder}by-vendor/";
+  //fetch order by vendor and status 
+  static const String fetchOrdersByVendorAndStatus = "${salesOrder}by-vendor-status/";
   static const String transaction = "${sales}transactions/";
+  // transaction related endpoints
+  // fetch transaction by order
+  static const String fetchTransactionsByOrder = "${transaction}by-order/";
   static const String payment = "${sales}payments/";
   static const String paymentGetway = "${sales}paymentgetways/";
 

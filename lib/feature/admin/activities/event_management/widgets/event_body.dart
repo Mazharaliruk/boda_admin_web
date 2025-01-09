@@ -6,6 +6,7 @@ import 'package:admin_boda/commons/common_widgets/show_dialog.dart';
 import 'package:admin_boda/feature/admin/activities/event_management/dialog/event_filter_dialog.dart';
 import 'package:admin_boda/feature/admin/activities/event_management/widgets/event_card.dart';
 import 'package:admin_boda/utils/constants/assets_manager.dart';
+import 'package:admin_boda/utils/loading.dart';
 import 'package:flutter_svg/svg.dart';
 
 import '../../../../../models/core/event_model.dart';
@@ -72,7 +73,7 @@ class _EventBody extends ConsumerState<EventBody> {
               future: eventContoller.fetchAllEvents(),
               builder: (context, snapshot) {
                  if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(child: CircularProgressIndicator());
+                  return const Center(child: LoadingWidget());
                 } else if (snapshot.hasError) {
                   return Center(child: Text(snapshot.error.toString()));
                 } else if (!snapshot.hasData) {

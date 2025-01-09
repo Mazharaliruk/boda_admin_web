@@ -56,8 +56,8 @@ class _CategoryBodyState extends ConsumerState<CategoryBody> {
             decoration: BoxDecoration(
                 color: context.whiteColor,
                 borderRadius: BorderRadius.circular(14.r)),
-            child: StreamBuilder<List<CategoriesModel>>(
-                stream: categoryController.listenForCategoryUpdates(),
+            child: FutureBuilder<List<CategoriesModel>>(
+                future: categoryController.fetchCategories(),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                      return const LoadingWidget();

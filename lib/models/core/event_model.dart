@@ -12,6 +12,7 @@ class EventModel {
   DateTime updated_at;
   String? description;
   int? user;
+  int? discount;
   String? location;
   DateTime? start_date;
   DateTime? end_date;
@@ -31,6 +32,7 @@ class EventModel {
     required this.updated_at,
     this.description,
     this.user,
+    this.discount,
     this.location,
     this.start_date,
     this.end_date,
@@ -52,6 +54,7 @@ class EventModel {
     DateTime? updated_at,
     String? description,
     int? user,
+    int? discount,
     String? location,
     DateTime? start_date,
     DateTime? end_date,
@@ -72,6 +75,7 @@ class EventModel {
       updated_at: updated_at ?? this.updated_at,
       description: description ?? this.description,
       user: user ?? this.user,
+      discount: discount ?? this.discount,
       location: location ?? this.location,
       start_date: start_date ?? this.start_date,
       end_date: end_date ?? this.end_date,
@@ -91,13 +95,14 @@ class EventModel {
     return <String, dynamic>{
       'id': id,
       'name': name,
-      'created_at': created_at.millisecondsSinceEpoch,
-      'updated_at': updated_at.millisecondsSinceEpoch,
+      'created_at': created_at.toIso8601String(),
+      'updated_at': updated_at.toIso8601String(),
       'description': description,
       'user': user,
+      'discount': discount,
       'location': location,
-      'start_date': start_date?.millisecondsSinceEpoch,
-      'end_date': end_date?.millisecondsSinceEpoch,
+      'start_date': start_date?.toIso8601String(),
+      'end_date': end_date?.toIso8601String(),
       'price': price,
       'currency': currency,
       'image_url': image_url,
@@ -119,6 +124,7 @@ class EventModel {
       description:
           map['description'] != null ? map['description'] as String : null,
       user: map['user'] != null ? map['user'] as int : null,
+      discount: map['discount'] != null ? map['discount'] as int : null,
       location: map['location'] != null ? map['location'] as String : null,
       start_date: map['start_date'] != null
           ? DateTime.parse(map['start_date'] as String)

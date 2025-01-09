@@ -1,3 +1,5 @@
+// ignore_for_file: must_be_immutable
+
 import 'package:admin_boda/commons/common_functions/padding.dart';
 import 'package:admin_boda/commons/common_imports/common_libs.dart';
 import 'package:admin_boda/commons/common_widgets/custom_button.dart';
@@ -7,11 +9,13 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
 
 import '../../../../../commons/common_imports/apis_commons.dart';
+import '../../../../../models/inventry/discount_model.dart';
 import '../controller/discount_controller.dart';
 
 class CreateDiscountDialog extends ConsumerStatefulWidget {
-  const CreateDiscountDialog({super.key, required this.isEdit});
+  CreateDiscountDialog({super.key, required this.isEdit, this.discoutModel});
   final bool isEdit;
+  DiscountModel? discoutModel;
 
   @override
   ConsumerState<CreateDiscountDialog> createState() =>
@@ -21,8 +25,8 @@ class CreateDiscountDialog extends ConsumerStatefulWidget {
 class _CreateDiscountDialogState extends ConsumerState<CreateDiscountDialog> {
   final disTitleCtr = TextEditingController();
   final disInPercentageCtr = TextEditingController();
-  final validFromCtr = TextEditingController();
-  final validToCtr = TextEditingController();
+  TextEditingController validFromCtr = TextEditingController();
+  TextEditingController validToCtr = TextEditingController();
   final _formKey = GlobalKey<FormState>();
 
   DateTime _selectedFromDate = DateTime.now();
@@ -61,8 +65,32 @@ class _CreateDiscountDialogState extends ConsumerState<CreateDiscountDialog> {
   @override
   void initState() {
     // TODO: implement initState
-    
-    super.initState();
+    if (widget.isEdit) {
+      WidgetsBinding.instance.addPostFrameCallback((_) async {
+        final discountCtr = ref.read(discountProvider);
+        try {
+          if (widget.discoutModel != null) {
+            final fetchDiscount =
+                await discountCtr.fetchDiscountById(widget.discoutModel!.id);
+            if (fetchDiscount != null) {
+              setState(() {
+                disTitleCtr.text = fetchDiscount.name;
+                disInPercentageCtr.text =
+                    fetchDiscount.discount_percent.toString();
+
+                validFromCtr.text = DateFormat.yMd()
+                    .format(fetchDiscount.start_date ?? DateTime.now());
+                validToCtr.text = DateFormat.yMd()
+                    .format(fetchDiscount.end_date ?? DateTime.now());
+              });
+            }
+          }
+        } catch (e) {
+          print("Error fetching tax: $e");
+        }
+      });
+      super.initState();
+    }
   }
 
   @override
@@ -72,9 +100,10 @@ class _CreateDiscountDialogState extends ConsumerState<CreateDiscountDialog> {
     disInPercentageCtr.dispose();
     validFromCtr.dispose();
     validToCtr.dispose();
-    
+
     super.dispose();
   }
+
   @override
   Widget build(BuildContext context) {
     final discountController = ref.watch(discountProvider);
@@ -206,19 +235,34 @@ class _CreateDiscountDialogState extends ConsumerState<CreateDiscountDialog> {
                   ),
                   padding12,
                   CustomButton(
-                    onPressed: () {
-                      if (_formKey.currentState!.validate()) {
-                        discountController.saveDiscount({
-                          "name": disTitleCtr.text,
-                          "discount_percent": disInPercentageCtr.text,
-                          "start_date": _selectedFromDate.toIso8601String(),
-                          "end_date": _selectedToDate.toIso8601String(),
-                            
-                        });
-                        Navigator.pop(context);
-                      }
-                    },
-                    buttonText: 'Create',
+                    onPressed: widget.isEdit
+                        ? () {
+                            if (_formKey.currentState!.validate()) {
+                              if (widget.discoutModel != null) {
+                                discountController.updateDiscount(
+                                    widget.discoutModel!.copyWith(
+                                  name: disTitleCtr.text,
+                                  discount_percent:
+                                      double.parse(disInPercentageCtr.text),
+                                  start_date: _selectedFromDate,
+                                  end_date: _selectedToDate,
+                                ));
+                              }
+                            }
+                          }
+                        : () {
+                            if (_formKey.currentState!.validate()) {
+                              discountController.saveDiscount({
+                                "name": disTitleCtr.text,
+                                "discount_percent": disInPercentageCtr.text,
+                                "start_date":
+                                    _selectedFromDate.toIso8601String(),
+                                "end_date": _selectedToDate.toIso8601String(),
+                              });
+                              Navigator.pop(context);
+                            }
+                          },
+                    buttonText:widget.isEdit ? "Update" : 'Add',
                     buttonHeight: 48,
                     buttonWidth: 141,
                     borderRadius: 14.r,

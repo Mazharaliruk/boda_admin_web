@@ -6,6 +6,7 @@ import 'package:admin_boda/core/enums/payment/order_status.dart';
 import 'package:admin_boda/feature/admin/activities/event_management/controllers/event_controller.dart';
 import 'package:admin_boda/feature/admin/activities/event_management/dialog/event_popup.dart';
 import 'package:admin_boda/utils/constants/assets_manager.dart';
+import 'package:admin_boda/utils/loading.dart';
 import 'package:dotted_line/dotted_line.dart';
 import 'package:flutter_popup/flutter_popup.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -145,7 +146,7 @@ class _EventCardState extends ConsumerState<EventCard> {
                           if (snapshot.connectionState ==
                               ConnectionState.waiting) {
                             return const Center(
-                                child: CircularProgressIndicator());
+                                child: LoadingWidget());
                           } else if (snapshot.hasError) {
                             return Center(
                                 child: Text(snapshot.error.toString()));
@@ -171,7 +172,7 @@ class _EventCardState extends ConsumerState<EventCard> {
                           if (snapshot.connectionState ==
                               ConnectionState.waiting) {
                             return const Center(
-                                child: CircularProgressIndicator());
+                                child: LoadingWidget());
                           } else if (snapshot.hasError) {
                             return Center(
                                 child: Text(snapshot.error.toString()));
@@ -207,7 +208,7 @@ class _EventCardState extends ConsumerState<EventCard> {
                           if (snapshot.connectionState ==
                               ConnectionState.waiting) {
                             return const Center(
-                                child: CircularProgressIndicator());
+                                child: LoadingWidget());
                           } else if (snapshot.hasError) {
                             return Center(
                                 child: Text(snapshot.error.toString()));

@@ -32,7 +32,7 @@ class _DiscountBodyState extends ConsumerState<DiscountBody> {
               onPressed: () {
                 showCustomDialog(
                     context: context,
-                    content: const CreateDiscountDialog(isEdit: false));
+                    content: CreateDiscountDialog(isEdit: false));
               },
               buttonText: 'Add Discount',
               buttonHeight: 30,
@@ -182,7 +182,8 @@ class _DiscountBodyState extends ConsumerState<DiscountBody> {
                                       onTap: () {
                                         showCustomDialog(
                                             context: context,
-                                            content: const CreateDiscountDialog(
+                                            content: CreateDiscountDialog(
+                                                discoutModel: discoutModel,
                                                 isEdit: true));
                                       },
                                       child: Container(
@@ -212,8 +213,10 @@ class _DiscountBodyState extends ConsumerState<DiscountBody> {
                                       onTap: () {
                                         showCustomDialog(
                                             context: context,
-                                            content:
-                                                const ApplyDiscountDialog());
+                                            content: ApplyDiscountDialog(
+                                              discountcontroller:
+                                                  discountcontroller,
+                                            ));
                                       },
                                       child: Container(
                                         height: 20,

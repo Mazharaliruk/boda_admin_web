@@ -136,7 +136,7 @@ class _BookingBodyState extends ConsumerState<BookingBody> {
                                               ConnectionState.waiting) {
                                             return const Center(
                                                 child:
-                                                    CircularProgressIndicator());
+                                                    LoadingWidget());
                                           } else if (userSnap.hasError) {
                                             return Center(
                                                 child: Text(
@@ -184,7 +184,7 @@ class _BookingBodyState extends ConsumerState<BookingBody> {
                                       if (eventSnap.connectionState ==
                                           ConnectionState.waiting) {
                                         return const Center(
-                                            child: CircularProgressIndicator());
+                                            child: LoadingWidget());
                                       }
                                        else if (eventSnap.hasError) {
                                         print(eventSnap.error);
@@ -237,7 +237,7 @@ class _BookingBodyState extends ConsumerState<BookingBody> {
                                       if (userSnap.connectionState ==
                                           ConnectionState.waiting) {
                                         return const Center(
-                                            child: CircularProgressIndicator());
+                                            child: LoadingWidget());
                                       } else if (userSnap.hasError) {
                                         return Center(
                                             child: Text(
@@ -283,7 +283,7 @@ class _BookingBodyState extends ConsumerState<BookingBody> {
                                         showCustomDialog(
                                             context: context,
                                             content:
-                                                const BookingDetailDialog());
+                                                 BookingDetailDialog(order: order, bookingController: bookingController,),);
                                       },
                                       child: Container(
                                         height: 20,

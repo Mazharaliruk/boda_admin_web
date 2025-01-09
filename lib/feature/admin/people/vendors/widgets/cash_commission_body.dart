@@ -248,9 +248,9 @@ class _CashCommissionBodyState extends ConsumerState<CashCommissionBody> {
                           overlayColor:
                               MaterialStateProperty.all(Colors.transparent),
                           onTap: () {
-                            showCustomDialog(
-                                context: context,
-                                content: const BookingDetailDialog());
+                            // showCustomDialog(
+                            //     context: context,
+                            //     content:  BookingDetailDialog());
                           },
                           child: Container(
                             margin: const EdgeInsets.only(left: 85),

@@ -91,7 +91,7 @@ class VendorCard extends StatelessWidget {
                 overlayColor: MaterialStateProperty.all(Colors.transparent),
                 onTap: () {
                   showCustomDialog(
-                      context: context, content: const VendorDetailDialog());
+                      context: context, content:  VendorDetailDialog(vendorProfileModel: vendorProfileModel,));
                 },
                 child: Container(
                     height: 35.h,
