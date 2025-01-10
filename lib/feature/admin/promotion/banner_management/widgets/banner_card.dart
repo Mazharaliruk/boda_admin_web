@@ -3,6 +3,7 @@
 import 'package:admin_boda/commons/common_functions/padding.dart';
 import 'package:admin_boda/commons/common_imports/apis_commons.dart';
 import 'package:admin_boda/commons/common_imports/common_libs.dart';
+import 'package:admin_boda/feature/admin/promotion/banner_management/widgets/full_screen_video_player.dart';
 import 'package:admin_boda/utils/constants/app_constants.dart';
 import 'package:admin_boda/utils/constants/assets_manager.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -84,6 +85,20 @@ class _UHomeBannerSectionState extends ConsumerState<BannerCard> {
     }
   }
 
+   Future<void> _enterFullscreen()async {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => FullscreenVideoPlayer(controller: _videoController, player: _player,
+        onExitFullscreen: ()async{
+          Navigator.pop(context);
+        },),
+
+
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     List<String> imageBanner = [widget.promotionModel.image_url ?? ''];
@@ -127,6 +142,7 @@ class _UHomeBannerSectionState extends ConsumerState<BannerCard> {
                               alignment: Alignment.center,
                               children: [
                                 Video(
+                                  onEnterFullscreen: _enterFullscreen,
                                   controller: _videoController,
                                   width: 360,
                                   height: 200,
@@ -220,7 +236,7 @@ class _UHomeBannerSectionState extends ConsumerState<BannerCard> {
                     color: context.blackColor, fontSize: MyFonts.size18),
               ),
               Text(
-                '222,455',
+                '0',
                 textAlign: TextAlign.end,
                 style: getRegularStyle(
                     color: context.blackColor, fontSize: MyFonts.size18),
@@ -237,7 +253,7 @@ class _UHomeBannerSectionState extends ConsumerState<BannerCard> {
                     color: context.blackColor, fontSize: MyFonts.size18),
               ),
               Text(
-                '222,455',
+                '0',
                 textAlign: TextAlign.end,
                 style: getRegularStyle(
                     color: context.blackColor, fontSize: MyFonts.size18),

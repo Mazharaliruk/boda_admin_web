@@ -66,8 +66,8 @@ class _LoyaltyBodyState extends ConsumerState<BannerBody> {
         padding18,
         Row(
           children: [
-            card(context: context, title: 'Impressions ', value: '32,980'),
-            card(context: context, title: 'Clicks ', value: '32,980'),
+            card(context: context, title: 'Impressions ', value: '0'),
+            card(context: context, title: 'Clicks ', value: '0'),
           ],
         ),
         Expanded(

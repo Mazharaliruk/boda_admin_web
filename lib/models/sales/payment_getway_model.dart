@@ -93,7 +93,7 @@ class PaymentGetwayModel {
 
   String toJson() => json.encode(toMap());
 
-  factory PaymentGetwayModel.fromJson(String source) =>
+  factory PaymentGetwayModel.fromJson(String source) =>                                                                                                                                                                                                                                                                                                                                                                                                                                                            
       PaymentGetwayModel.fromMap(json.decode(source) as Map<String, dynamic>);
 
   @override
