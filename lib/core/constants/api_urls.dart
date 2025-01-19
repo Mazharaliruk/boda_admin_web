@@ -4,6 +4,7 @@ class ApiUrls {
   static Future<String?> getAccessToken() async {
     final prefs = await SharedPreferences.getInstance();
 
+
     final accessToken = prefs.getString('accessToken');
     return accessToken;
   }
