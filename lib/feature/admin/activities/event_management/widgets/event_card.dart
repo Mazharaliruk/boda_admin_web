@@ -148,8 +148,12 @@ class _EventCardState extends ConsumerState<EventCard> {
                             return const Center(
                                 child: LoadingWidget());
                           } else if (snapshot.hasError) {
-                            return Center(
-                                child: Text(snapshot.error.toString()));
+                             return infoCard(
+                              title: 'Bookings',
+                              value: '0',
+                              icon: AppAssets.bookingSvgIcon,
+                              context: context,
+                            );
                           } else if (!snapshot.hasData) {
                             return infoCard(
                               title: 'Bookings',

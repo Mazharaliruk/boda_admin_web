@@ -30,7 +30,7 @@ class DashboardNotificationBody extends StatelessWidget {
           padding12,
           Expanded(
             child: ListView.builder(
-                itemCount: 10,
+                itemCount: 1,
                 shrinkWrap: true,
                 physics: const BouncingScrollPhysics(),
                 itemBuilder: (context, index) {

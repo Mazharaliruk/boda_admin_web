@@ -63,7 +63,7 @@ class _TopSessionState extends ConsumerState<TopSession> {
               ],
             ),
             Text(
-              '592k',
+              '0',
               style: getSemiBoldStyle(
                   color: context.blackColor, fontSize: MyFonts.size20),
             ),
@@ -267,7 +267,7 @@ class _TopSessionState extends ConsumerState<TopSession> {
               ],
             ),
             Text(
-              '592k',
+              '0',
               style: getSemiBoldStyle(
                   color: context.blackColor, fontSize: MyFonts.size20),
             ),
@@ -309,7 +309,7 @@ class _TopSessionState extends ConsumerState<TopSession> {
               ],
             ),
             Text(
-              '592k',
+              '0',
               style: getSemiBoldStyle(
                   color: context.blackColor, fontSize: MyFonts.size20),
             ),

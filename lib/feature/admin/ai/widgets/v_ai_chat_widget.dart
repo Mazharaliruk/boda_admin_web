@@ -3,6 +3,9 @@ import 'package:admin_boda/commons/common_imports/common_libs.dart';
 import 'package:admin_boda/commons/common_widgets/custom_button.dart';
 import 'package:admin_boda/utils/constants/app_constants.dart';
 import 'package:admin_boda/utils/constants/assets_manager.dart';
+import 'package:get/get.dart';
+
+import '../chat/ai_chat.dart';
 
 class VAiChatWidget extends StatelessWidget {
   const VAiChatWidget({super.key});
@@ -38,7 +41,13 @@ class VAiChatWidget extends StatelessWidget {
                         color: context.blackColor, fontSize: MyFonts.size24),
                   ),
                   CustomButton(
-                    onPressed: () {},
+                    onPressed: () {
+                   Navigator.of(context).push(
+                     MaterialPageRoute(
+                       builder: (context) => const ChatScreen(),
+                     ),
+                   );
+                    },
                     buttonText: 'Chat With Ai',
                     buttonHeight: 46.h,
                     buttonWidth: 118.w,
