@@ -8,10 +8,12 @@ class CategoryService {
 
   // Initialize the WebSocket connection and potentially use the access token
   Future<void> init() async {
-    String? accessToken = await ApiUrls.getAccessToken();
+    try{
+  String? accessToken = await ApiUrls.getAccessToken();
     if (accessToken == null) return;
-
-   
+    }catch(e){
+      print('Error getting access token: $e');
+    }   
   }
 
   // Stream that listens for category updates

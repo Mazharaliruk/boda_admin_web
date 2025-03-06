@@ -13,6 +13,7 @@ class VendorRepository {
 
   
 // Method to fetch categories
+
 Future<List<VendorProfileModel>> fetchVendorList() async {
   const String url = ApiUrls.vendorList;
 

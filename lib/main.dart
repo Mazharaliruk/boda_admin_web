@@ -1,3 +1,4 @@
+
 import 'package:admin_boda/commons/common_imports/apis_commons.dart';
 import 'package:admin_boda/commons/common_imports/common_libs.dart';
 import 'package:admin_boda/feature/auth/view/sign_in_screen.dart';
@@ -6,10 +7,13 @@ import 'package:admin_boda/routes/route_manager.dart';
 import 'package:admin_boda/utils/constants/app_constants.dart';
 import 'package:admin_boda/utils/themes/theme.dart';
 import 'package:media_kit/media_kit.dart';
+import 'package:openai_dart/openai_dart.dart';
 import 'package:video_player_media_kit/video_player_media_kit.dart';
 import 'package:admin_boda/feature/admin/main_menu/view/main_menu_screen.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 import 'feature/auth/controller/auth_controller.dart';
+
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -22,6 +26,11 @@ void main() async {
     android: true,
     iOS: true,
   );
+   await dotenv.load(fileName: ".env");
+  final openaiApiKey = dotenv.env['OPENAI_API_KEY'];
+  print("key:$openaiApiKey");
+
+chatCompleteDartOpenAi(openaiApiKey??'');
 
   // Initialize services
   await InitServices.init();
@@ -33,6 +42,27 @@ void main() async {
     ),
   );
 }
+
+  void chatCompleteDartOpenAi(String token) async {
+  final client = OpenAIClient(apiKey: token, );
+
+    final res = await client.createChatCompletion(
+      request: const CreateChatCompletionRequest(
+        model: ChatCompletionModel.modelId('gpt-4o'),
+        messages: [
+          ChatCompletionMessage.system(
+            content: 'You are a helpful assistant.',
+          ),
+          ChatCompletionMessage.user(
+            content: ChatCompletionUserMessageContent.string('Hello!'),
+          ),
+        ],
+        temperature: 0,
+      ),
+    );
+    print(res.choices.first.message.content);
+// Hello! How can I assist you today?
+  }
 
 class MyApp extends ConsumerWidget {
   const MyApp({super.key});
