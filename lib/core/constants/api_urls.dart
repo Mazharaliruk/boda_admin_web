@@ -15,7 +15,8 @@ class ApiUrls {
     return refreshToken;
   }
 
-  static const String baseUrl = "http://127.0.0.1:8000/";
+  // static const String baseUrl = "http://127.0.0.1:8000/";
+    static const String baseUrl = "https://mazharali.pythonanywhere.com/";
 
   // user endpoints
   static const String login = "${baseUrl}api/user/login/";
